@@ -1,5 +1,5 @@
 
-### Bright & Dark Channel extractor
+### Bright and Dark Channel extractor
 
 #### modify the caffe.prototxt
 ```
