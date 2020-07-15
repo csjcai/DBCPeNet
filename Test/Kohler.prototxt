@@ -1,0 +1,9857 @@
+input:"data_4"
+input_dim:1
+input_dim:3
+input_dim:200
+input_dim:200
+
+input:"data_2"
+input_dim:1
+input_dim:3
+input_dim:400
+input_dim:400
+
+input:"data_1"
+input_dim:1
+input_dim:3
+input_dim:800
+input_dim:800
+
+###################################################
+
+layer {
+  name: "prepro1_1"
+  type: "Convolution"
+  bottom: "data_1"
+  top: "prepro1_1"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "prepro1_2"
+  type: "Convolution"
+  bottom: "prepro1_1"
+  top: "prepro1_2"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "Cdarkchannel1_1"
+  type: "Convolution"
+  bottom: "prepro1_2"
+  top: "Cdarkchannel1_1"
+  convolution_param {
+    num_output: 3
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "Cwhitechannel1_1"
+  type: "Convolution"
+  bottom: "prepro1_2"
+  top: "Cwhitechannel1_1"
+  convolution_param {
+    num_output: 3
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "prepro1_2b"
+  type: "Convolution"
+  bottom: "prepro1_2"
+  top: "prepro1_2b"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "eltwiseDWD1_1"
+  type: "Concat"
+  bottom: "prepro1_2b"
+  bottom: "Cdarkchannel1_1"
+  bottom: "Cwhitechannel1_1"
+  top: "eltwiseDWD1_1"
+}
+
+layer {
+  name: "prepro1_3"
+  type: "Convolution"
+  bottom: "eltwiseDWD1_1"
+  top: "prepro1_3"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "conv1_1"
+  type: "Convolution"
+  bottom: "prepro1_3"
+  top: "conv1_1"
+  param {name: "conv1_w"}
+  param {name: "conv1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "conv1_2"
+  type: "Convolution"
+  bottom: "conv1_1"
+  top: "conv1_2"
+  param {name: "conv2_w"}
+  param {name: "conv2_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_1a"
+  type: "Convolution"
+  bottom: "conv1_2"
+  top: "RDB1_1a"
+  param {name: "RDB1a_w"}
+  param {name: "RDB1a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_1a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_1a"
+  top: "RDB1_1a"
+}
+
+layer {
+  name: "RDB1_1a1"
+  type: "Convolution"
+  bottom: "RDB1_1a"
+  top: "RDB1_1a1"
+  param {name: "RDB1a1_w"}
+  param {name: "RDB1a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_1_Eltwise1"
+  type: "Eltwise"
+  bottom: "conv1_2"
+  bottom: "RDB1_1a1"
+  top: "RDB1_1_Eltwise1"
+}
+
+layer {
+  name: "RDB1_1b"
+  type: "Convolution"
+  bottom: "RDB1_1_Eltwise1"
+  top: "RDB1_1b"
+  param {name: "RDB1b_w"}
+  param {name: "RDB1b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_1b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_1b"
+  top: "RDB1_1b"
+}
+
+layer {
+  name: "RDB1_1b1"
+  type: "Convolution"
+  bottom: "RDB1_1b"
+  top: "RDB1_1b1"
+  param {name: "RDB1b1_w"}
+  param {name: "RDB1b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_1_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_1b1"
+  bottom: "RDB1_1_Eltwise1"
+  top: "RDB1_1_Eltwise2"
+}
+
+layer {
+  name: "RDB1_1c"
+  type: "Convolution"
+  bottom: "RDB1_1_Eltwise2"
+  top: "RDB1_1c"
+  param {name: "RDB1c_w"}
+  param {name: "RDB1c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_1c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_1c"
+  top: "RDB1_1c"
+}
+
+layer {
+  name: "RDB1_1c1"
+  type: "Convolution"
+  bottom: "RDB1_1c"
+  top: "RDB1_1c1"
+  param {name: "RDB1c1_w"}
+  param {name: "RDB1c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_1_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_1_Eltwise2"
+  bottom: "RDB1_1c1"
+  top: "RDB1_1_Eltwise3"
+}
+
+layer {
+  name: "RDB1_1d"
+  type: "Convolution"
+  bottom: "RDB1_1_Eltwise3"
+  top: "RDB1_1d"
+  param {name: "RDB1d_w"}
+  param {name: "RDB1d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_1d_Sum"
+	type: "Eltwise"
+	bottom: "conv1_2"
+	bottom: "RDB1_1d"
+	top: "RDB1_1d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB1_2a"
+  type: "Convolution"
+  bottom: "RDB1_1d_Sum"
+  top: "RDB1_2a"
+  param {name: "RDB2a_w"}
+  param {name: "RDB2a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_2a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_2a"
+  top: "RDB1_2a"
+}
+
+layer {
+  name: "RDB1_2a1"
+  type: "Convolution"
+  bottom: "RDB1_2a"
+  top: "RDB1_2a1"
+  param {name: "RDB2a1_w"}
+  param {name: "RDB2a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_2_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB1_1d_Sum"
+  bottom: "RDB1_2a1"
+  top: "RDB1_2_Eltwise1"
+}
+
+layer {
+  name: "RDB1_2b"
+  type: "Convolution"
+  bottom: "RDB1_2_Eltwise1"
+  top: "RDB1_2b"
+  param {name: "RDB2b_w"}
+  param {name: "RDB2b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_2b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_2b"
+  top: "RDB1_2b"
+}
+
+layer {
+  name: "RDB1_2b1"
+  type: "Convolution"
+  bottom: "RDB1_2b"
+  top: "RDB1_2b1"
+  param {name: "RDB2b1_w"}
+  param {name: "RDB2b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_2_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_2b1"
+  bottom: "RDB1_2_Eltwise1"
+  top: "RDB1_2_Eltwise2"
+}
+
+layer {
+  name: "RDB1_2c"
+  type: "Convolution"
+  bottom: "RDB1_2_Eltwise2"
+  top: "RDB1_2c"
+  param {name: "RDB2c_w"}
+  param {name: "RDB2c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_2c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_2c"
+  top: "RDB1_2c"
+}
+
+layer {
+  name: "RDB1_2c1"
+  type: "Convolution"
+  bottom: "RDB1_2c"
+  top: "RDB1_2c1"
+  param {name: "RDB2c1_w"}
+  param {name: "RDB2c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_2_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_2_Eltwise2"
+  bottom: "RDB1_2c1"
+  top: "RDB1_2_Eltwise3"
+}
+
+
+layer {
+  name: "RDB1_2d"
+  type: "Convolution"
+  bottom: "RDB1_2_Eltwise3"
+  top: "RDB1_2d"
+  param {name: "RDB2d_w"}
+  param {name: "RDB2d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_2d_Sum"
+	type: "Eltwise"
+	bottom: "RDB1_1d_Sum"
+	bottom: "RDB1_2d"
+	top: "RDB1_2d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB1_3a"
+  type: "Convolution"
+  bottom: "RDB1_2d_Sum"
+  top: "RDB1_3a"
+  param {name: "RDB3a_w"}
+  param {name: "RDB3a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_3a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_3a"
+  top: "RDB1_3a"
+}
+
+layer {
+  name: "RDB1_3a1"
+  type: "Convolution"
+  bottom: "RDB1_3a"
+  top: "RDB1_3a1"
+  param {name: "RDB3a1_w"}
+  param {name: "RDB3a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_3_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB1_2d_Sum"
+  bottom: "RDB1_3a1"
+  top: "RDB1_3_Eltwise1"
+}
+
+layer {
+  name: "RDB1_3b"
+  type: "Convolution"
+  bottom: "RDB1_3_Eltwise1"
+  top: "RDB1_3b"
+  param {name: "RDB3b_w"}
+  param {name: "RDB3b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_3b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_3b"
+  top: "RDB1_3b"
+}
+
+layer {
+  name: "RDB1_3b1"
+  type: "Convolution"
+  bottom: "RDB1_3b"
+  top: "RDB1_3b1"
+  param {name: "RDB3b1_w"}
+  param {name: "RDB3b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_3_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_3b1"
+  bottom: "RDB1_3_Eltwise1"
+  top: "RDB1_3_Eltwise2"
+}
+layer {
+  name: "RDB1_3c"
+  type: "Convolution"
+  bottom: "RDB1_3_Eltwise2"
+  top: "RDB1_3c"
+  param {name: "RDB3c_w"}
+  param {name: "RDB3c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_3c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_3c"
+  top: "RDB1_3c"
+}
+
+layer {
+  name: "RDB1_3c1"
+  type: "Convolution"
+  bottom: "RDB1_3c"
+  top: "RDB1_3c1"
+  param {name: "RDB3c1_w"}
+  param {name: "RDB3c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_3_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_3_Eltwise2"
+  bottom: "RDB1_3c1"
+  top: "RDB1_3_Eltwise3"
+}
+
+layer {
+  name: "RDB1_3d"
+  type: "Convolution"
+  bottom: "RDB1_3_Eltwise3"
+  top: "RDB1_3d"
+  param {name: "RDB3d_w"}
+  param {name: "RDB3d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_3d_Sum"
+	type: "Eltwise"
+	bottom: "RDB1_2d_Sum"
+	bottom: "RDB1_3d"
+	top: "RDB1_3d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB1_4a"
+  type: "Convolution"
+  bottom: "RDB1_3d_Sum"
+  top: "RDB1_4a"
+  param {name: "RDB4a_w"}
+  param {name: "RDB4a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_4a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_4a"
+  top: "RDB1_4a"
+}
+
+layer {
+  name: "RDB1_4a1"
+  type: "Convolution"
+  bottom: "RDB1_4a"
+  top: "RDB1_4a1"
+  param {name: "RDB4a1_w"}
+  param {name: "RDB4a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_4_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB1_3d_Sum"
+  bottom: "RDB1_4a1"
+  top: "RDB1_4_Eltwise1"
+}
+
+layer {
+  name: "RDB1_4b"
+  type: "Convolution"
+  bottom: "RDB1_4_Eltwise1"
+  top: "RDB1_4b"
+  param {name: "RDB4b_w"}
+  param {name: "RDB4b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_4b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_4b"
+  top: "RDB1_4b"
+}
+
+layer {
+  name: "RDB1_4b1"
+  type: "Convolution"
+  bottom: "RDB1_4b"
+  top: "RDB1_4b1"
+  param {name: "RDB4b1_w"}
+  param {name: "RDB4b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+
+layer {
+  name: "RDB1_4_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_4b1"
+  bottom: "RDB1_4_Eltwise1"
+  top: "RDB1_4_Eltwise2"
+}
+
+layer {
+  name: "RDB1_4c"
+  type: "Convolution"
+  bottom: "RDB1_4_Eltwise2"
+  top: "RDB1_4c"
+  param {name: "RDB4c_w"}
+  param {name: "RDB4c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_4c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_4c"
+  top: "RDB1_4c"
+}
+
+layer {
+  name: "RDB1_4c1"
+  type: "Convolution"
+  bottom: "RDB1_4c"
+  top: "RDB1_4c1"
+  param {name: "RDB4c1_w"}
+  param {name: "RDB4c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+
+layer {
+  name: "RDB1_4_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_4_Eltwise2"
+  bottom: "RDB1_4c1"
+  top: "RDB1_4_Eltwise3"
+}
+
+layer {
+  name: "RDB1_4d"
+  type: "Convolution"
+  bottom: "RDB1_4_Eltwise3"
+  top: "RDB1_4d"
+  param {name: "RDB4d_w"}
+  param {name: "RDB4d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_4d_Sum"
+	type: "Eltwise"
+	bottom: "RDB1_3d_Sum"
+	bottom: "RDB1_4d"
+	top: "RDB1_4d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+#################################################
+
+##################################################
+layer {
+  name: "prepro2_1"
+  type: "Convolution"
+  bottom: "data_2"
+  top: "prepro2_1"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "prepro2_2"
+  type: "Convolution"
+  bottom: "prepro2_1"
+  top: "prepro2_2"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "Concat1_2_a"
+  type: "Concat"
+  bottom: "conv1_1"
+  bottom: "prepro2_2"
+  top: "Concat1_2_a"
+}
+
+layer {
+  name: "Cdarkchannel2_1"
+  type: "Convolution"
+  bottom: "Concat1_2_a"
+  top: "Cdarkchannel2_1"
+  convolution_param {
+    num_output: 3
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "Cwhitechannel2_1"
+  type: "Convolution"
+  bottom: "Concat1_2_a"
+  top: "Cwhitechannel2_1"
+  convolution_param {
+    num_output: 3
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "prepro2_2b"
+  type: "Convolution"
+  bottom: "Concat1_2_a"
+  top: "prepro2_2b"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "eltwiseDWD2_1"
+  type: "Concat"
+  bottom: "prepro2_2b"
+  bottom: "Cdarkchannel2_1"
+  bottom: "Cwhitechannel2_1"
+  top: "eltwiseDWD2_1"
+}
+
+layer {
+  name: "prepro2_3"
+  type: "Convolution"
+  bottom: "eltwiseDWD2_1"
+  top: "prepro2_3"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "conv2_1"
+  type: "Convolution"
+  bottom: "prepro2_3"
+  top: "conv2_1"
+  param {name: "conv1_w"}
+  param {name: "conv1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "conv2_2"
+  type: "Convolution"
+  bottom: "conv2_1"
+  top: "conv2_2"
+  param {name: "conv2_w"}
+  param {name: "conv2_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_1a"
+  type: "Convolution"
+  bottom: "conv2_2"
+  top: "RDB2_1a"
+  param {name: "RDB1a_w"}
+  param {name: "RDB1a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_1a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_1a"
+  top: "RDB2_1a"
+}
+
+layer {
+  name: "RDB2_1a1"
+  type: "Convolution"
+  bottom: "RDB2_1a"
+  top: "RDB2_1a1"
+  param {name: "RDB1a1_w"}
+  param {name: "RDB1a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_1_Eltwise1"
+  type: "Eltwise"
+  bottom: "conv2_2"
+  bottom: "RDB2_1a1"
+  top: "RDB2_1_Eltwise1"
+}
+
+layer {
+  name: "RDB2_1b"
+  type: "Convolution"
+  bottom: "RDB2_1_Eltwise1"
+  top: "RDB2_1b"
+  param {name: "RDB1b_w"}
+  param {name: "RDB1b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_1b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_1b"
+  top: "RDB2_1b"
+}
+
+layer {
+  name: "RDB2_1b1"
+  type: "Convolution"
+  bottom: "RDB2_1b"
+  top: "RDB2_1b1"
+  param {name: "RDB1b1_w"}
+  param {name: "RDB1b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_1_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_1b1"
+  bottom: "RDB2_1_Eltwise1"
+  top: "RDB2_1_Eltwise2"
+}
+
+layer {
+  name: "RDB2_1c"
+  type: "Convolution"
+  bottom: "RDB2_1_Eltwise2"
+  top: "RDB2_1c"
+  param {name: "RDB1c_w"}
+  param {name: "RDB1c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_1c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_1c"
+  top: "RDB2_1c"
+}
+
+layer {
+  name: "RDB2_1c1"
+  type: "Convolution"
+  bottom: "RDB2_1c"
+  top: "RDB2_1c1"
+  param {name: "RDB1c1_w"}
+  param {name: "RDB1c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_1_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_1_Eltwise2"
+  bottom: "RDB2_1c1"
+  top: "RDB2_1_Eltwise3"
+}
+
+layer {
+  name: "RDB2_1d"
+  type: "Convolution"
+  bottom: "RDB2_1_Eltwise3"
+  top: "RDB2_1d"
+  param {name: "RDB1d_w"}
+  param {name: "RDB1d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_1d_Sum"
+	type: "Eltwise"
+	bottom: "conv2_2"
+	bottom: "RDB2_1d"
+	top: "RDB2_1d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB2_2a"
+  type: "Convolution"
+  bottom: "RDB2_1d_Sum"
+  top: "RDB2_2a"
+  param {name: "RDB2a_w"}
+  param {name: "RDB2a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_2a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_2a"
+  top: "RDB2_2a"
+}
+
+layer {
+  name: "RDB2_2a1"
+  type: "Convolution"
+  bottom: "RDB2_2a"
+  top: "RDB2_2a1"
+  param {name: "RDB2a1_w"}
+  param {name: "RDB2a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_2_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB2_1d_Sum"
+  bottom: "RDB2_2a1"
+  top: "RDB2_2_Eltwise1"
+}
+
+layer {
+  name: "RDB2_2b"
+  type: "Convolution"
+  bottom: "RDB2_2_Eltwise1"
+  top: "RDB2_2b"
+  param {name: "RDB2b_w"}
+  param {name: "RDB2b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_2b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_2b"
+  top: "RDB2_2b"
+}
+
+layer {
+  name: "RDB2_2b1"
+  type: "Convolution"
+  bottom: "RDB2_2b"
+  top: "RDB2_2b1"
+  param {name: "RDB2b1_w"}
+  param {name: "RDB2b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_2_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_2b1"
+  bottom: "RDB2_2_Eltwise1"
+  top: "RDB2_2_Eltwise2"
+}
+
+layer {
+  name: "RDB2_2c"
+  type: "Convolution"
+  bottom: "RDB2_2_Eltwise2"
+  top: "RDB2_2c"
+  param {name: "RDB2c_w"}
+  param {name: "RDB2c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_2c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_2c"
+  top: "RDB2_2c"
+}
+
+layer {
+  name: "RDB2_2c1"
+  type: "Convolution"
+  bottom: "RDB2_2c"
+  top: "RDB2_2c1"
+  param {name: "RDB2c1_w"}
+  param {name: "RDB2c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_2_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_2_Eltwise2"
+  bottom: "RDB2_2c1"
+  top: "RDB2_2_Eltwise3"
+}
+
+
+layer {
+  name: "RDB2_2d"
+  type: "Convolution"
+  bottom: "RDB2_2_Eltwise3"
+  top: "RDB2_2d"
+  param {name: "RDB2d_w"}
+  param {name: "RDB2d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_2d_Sum"
+	type: "Eltwise"
+	bottom: "RDB2_1d_Sum"
+	bottom: "RDB2_2d"
+	top: "RDB2_2d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB2_3a"
+  type: "Convolution"
+  bottom: "RDB2_2d_Sum"
+  top: "RDB2_3a"
+  param {name: "RDB3a_w"}
+  param {name: "RDB3a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_3a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_3a"
+  top: "RDB2_3a"
+}
+
+layer {
+  name: "RDB2_3a1"
+  type: "Convolution"
+  bottom: "RDB2_3a"
+  top: "RDB2_3a1"
+  param {name: "RDB3a1_w"}
+  param {name: "RDB3a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_3_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB2_2d_Sum"
+  bottom: "RDB2_3a1"
+  top: "RDB2_3_Eltwise1"
+}
+
+layer {
+  name: "RDB2_3b"
+  type: "Convolution"
+  bottom: "RDB2_3_Eltwise1"
+  top: "RDB2_3b"
+  param {name: "RDB3b_w"}
+  param {name: "RDB3b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_3b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_3b"
+  top: "RDB2_3b"
+}
+
+layer {
+  name: "RDB2_3b1"
+  type: "Convolution"
+  bottom: "RDB2_3b"
+  top: "RDB2_3b1"
+  param {name: "RDB3b1_w"}
+  param {name: "RDB3b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_3_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_3b1"
+  bottom: "RDB2_3_Eltwise1"
+  top: "RDB2_3_Eltwise2"
+}
+layer {
+  name: "RDB2_3c"
+  type: "Convolution"
+  bottom: "RDB2_3_Eltwise2"
+  top: "RDB2_3c"
+  param {name: "RDB3c_w"}
+  param {name: "RDB3c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_3c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_3c"
+  top: "RDB2_3c"
+}
+
+layer {
+  name: "RDB2_3c1"
+  type: "Convolution"
+  bottom: "RDB2_3c"
+  top: "RDB2_3c1"
+  param {name: "RDB3c1_w"}
+  param {name: "RDB3c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_3_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_3_Eltwise2"
+  bottom: "RDB2_3c1"
+  top: "RDB2_3_Eltwise3"
+}
+
+layer {
+  name: "RDB2_3d"
+  type: "Convolution"
+  bottom: "RDB2_3_Eltwise3"
+  top: "RDB2_3d"
+  param {name: "RDB3d_w"}
+  param {name: "RDB3d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_3d_Sum"
+	type: "Eltwise"
+	bottom: "RDB2_2d_Sum"
+	bottom: "RDB2_3d"
+	top: "RDB2_3d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB2_4a"
+  type: "Convolution"
+  bottom: "RDB2_3d_Sum"
+  top: "RDB2_4a"
+  param {name: "RDB4a_w"}
+  param {name: "RDB4a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_4a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_4a"
+  top: "RDB2_4a"
+}
+
+layer {
+  name: "RDB2_4a1"
+  type: "Convolution"
+  bottom: "RDB2_4a"
+  top: "RDB2_4a1"
+  param {name: "RDB4a1_w"}
+  param {name: "RDB4a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_4_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB2_3d_Sum"
+  bottom: "RDB2_4a1"
+  top: "RDB2_4_Eltwise1"
+}
+
+layer {
+  name: "RDB2_4b"
+  type: "Convolution"
+  bottom: "RDB2_4_Eltwise1"
+  top: "RDB2_4b"
+  param {name: "RDB4b_w"}
+  param {name: "RDB4b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_4b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_4b"
+  top: "RDB2_4b"
+}
+
+layer {
+  name: "RDB2_4b1"
+  type: "Convolution"
+  bottom: "RDB2_4b"
+  top: "RDB2_4b1"
+  param {name: "RDB4b1_w"}
+  param {name: "RDB4b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+
+layer {
+  name: "RDB2_4_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_4b1"
+  bottom: "RDB2_4_Eltwise1"
+  top: "RDB2_4_Eltwise2"
+}
+
+layer {
+  name: "RDB2_4c"
+  type: "Convolution"
+  bottom: "RDB2_4_Eltwise2"
+  top: "RDB2_4c"
+  param {name: "RDB4c_w"}
+  param {name: "RDB4c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_4c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_4c"
+  top: "RDB2_4c"
+}
+
+layer {
+  name: "RDB2_4c1"
+  type: "Convolution"
+  bottom: "RDB2_4c"
+  top: "RDB2_4c1"
+  param {name: "RDB4c1_w"}
+  param {name: "RDB4c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+
+layer {
+  name: "RDB2_4_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_4_Eltwise2"
+  bottom: "RDB2_4c1"
+  top: "RDB2_4_Eltwise3"
+}
+
+layer {
+  name: "RDB2_4d"
+  type: "Convolution"
+  bottom: "RDB2_4_Eltwise3"
+  top: "RDB2_4d"
+  param {name: "RDB4d_w"}
+  param {name: "RDB4d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_4d_Sum"
+	type: "Eltwise"
+	bottom: "RDB2_3d_Sum"
+	bottom: "RDB2_4d"
+	top: "RDB2_4d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+####################################################
+
+layer {
+  name: "conv2_3"
+  type: "Convolution"
+  bottom: "RDB2_4d_Sum"
+  top: "conv2_3"
+  param {name: "conv3_w"}
+  param {name: "conv3_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "conv2_4"
+  type: "Convolution"
+  bottom: "conv2_3"
+  top: "conv2_4"
+  param {name: "conv4_w"}
+  param {name: "conv4_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_5a"
+  type: "Convolution"
+  bottom: "conv2_4"
+  top: "RDB2_5a"
+  param {name: "RDB5a_w"}
+  param {name: "RDB5a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_5a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_5a"
+  top: "RDB2_5a"
+}
+
+layer {
+  name: "RDB2_5a1"
+  type: "Convolution"
+  bottom: "RDB2_5a"
+  top: "RDB2_5a1"
+  param {name: "RDB5a1_w"}
+  param {name: "RDB5a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_5_Eltwise1"
+  type: "Eltwise"
+  bottom: "conv2_4"
+  bottom: "RDB2_5a1"
+  top: "RDB2_5_Eltwise1"
+}
+
+layer {
+  name: "RDB2_5b"
+  type: "Convolution"
+  bottom: "RDB2_5_Eltwise1"
+  top: "RDB2_5b"
+  param {name: "RDB5b_w"}
+  param {name: "RDB5b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_5b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_5b"
+  top: "RDB2_5b"
+}
+
+layer {
+  name: "RDB2_5b1"
+  type: "Convolution"
+  bottom: "RDB2_5b"
+  top: "RDB2_5b1"
+  param {name: "RDB5b1_w"}
+  param {name: "RDB5b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_5_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_5b1"
+  bottom: "RDB2_5_Eltwise1"
+  top: "RDB2_5_Eltwise2"
+}
+
+layer {
+  name: "RDB2_5c"
+  type: "Convolution"
+  bottom: "RDB2_5_Eltwise2"
+  top: "RDB2_5c"
+  param {name: "RDB5c_w"}
+  param {name: "RDB5c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_5c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_5c"
+  top: "RDB2_5c"
+}
+
+layer {
+  name: "RDB2_5c1"
+  type: "Convolution"
+  bottom: "RDB2_5c"
+  top: "RDB2_5c1"
+  param {name: "RDB5c1_w"}
+  param {name: "RDB5c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_5_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_5_Eltwise2"
+  bottom: "RDB2_5c1"
+  top: "RDB2_5_Eltwise3"
+}
+
+layer {
+  name: "RDB2_5d"
+  type: "Convolution"
+  bottom: "RDB2_5_Eltwise3"
+  top: "RDB2_5d"
+  param {name: "RDB5d_w"}
+  param {name: "RDB5d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_5d_Sum"
+	type: "Eltwise"
+	bottom: "conv2_4"
+	bottom: "RDB2_5d"
+	top: "RDB2_5d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB2_6a"
+  type: "Convolution"
+  bottom: "RDB2_5d_Sum"
+  top: "RDB2_6a"
+  param {name: "RDB6a_w"}
+  param {name: "RDB6a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_6a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_6a"
+  top: "RDB2_6a"
+}
+
+layer {
+  name: "RDB2_6a1"
+  type: "Convolution"
+  bottom: "RDB2_6a"
+  top: "RDB2_6a1"
+  param {name: "RDB6a1_w"}
+  param {name: "RDB6a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_6_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB2_5d_Sum"
+  bottom: "RDB2_6a1"
+  top: "RDB2_6_Eltwise1"
+}
+
+layer {
+  name: "RDB2_6b"
+  type: "Convolution"
+  bottom: "RDB2_6_Eltwise1"
+  top: "RDB2_6b"
+  param {name: "RDB6b_w"}
+  param {name: "RDB6b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_6b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_6b"
+  top: "RDB2_6b"
+}
+
+layer {
+  name: "RDB2_6b1"
+  type: "Convolution"
+  bottom: "RDB2_6b"
+  top: "RDB2_6b1"
+  param {name: "RDB6b1_w"}
+  param {name: "RDB6b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_6_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_6b1"
+  bottom: "RDB2_6_Eltwise1"
+  top: "RDB2_6_Eltwise2"
+}
+
+layer {
+  name: "RDB2_6c"
+  type: "Convolution"
+  bottom: "RDB2_6_Eltwise2"
+  top: "RDB2_6c"
+  param {name: "RDB6c_w"}
+  param {name: "RDB6c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_6c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_6c"
+  top: "RDB2_6c"
+}
+
+layer {
+  name: "RDB2_6c1"
+  type: "Convolution"
+  bottom: "RDB2_6c"
+  top: "RDB2_6c1"
+  param {name: "RDB6c1_w"}
+  param {name: "RDB6c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_6_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_6_Eltwise2"
+  bottom: "RDB2_6c1"
+  top: "RDB2_6_Eltwise3"
+}
+
+layer {
+  name: "RDB2_6d"
+  type: "Convolution"
+  bottom: "RDB2_6_Eltwise3"
+  top: "RDB2_6d"
+  param {name: "RDB6d_w"}
+  param {name: "RDB6d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_6d_Sum"
+	type: "Eltwise"
+	bottom: "RDB2_5d_Sum"
+	bottom: "RDB2_6d"
+	top: "RDB2_6d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB2_7a"
+  type: "Convolution"
+  bottom: "RDB2_6d_Sum"
+  top: "RDB2_7a"
+  param {name: "RDB7a_w"}
+  param {name: "RDB7a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_7a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_7a"
+  top: "RDB2_7a"
+}
+
+layer {
+  name: "RDB2_7a1"
+  type: "Convolution"
+  bottom: "RDB2_7a"
+  top: "RDB2_7a1"
+  param {name: "RDB7a1_w"}
+  param {name: "RDB7a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_7_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB2_6d_Sum"
+  bottom: "RDB2_7a1"
+  top: "RDB2_7_Eltwise1"
+}
+
+layer {
+  name: "RDB2_7b"
+  type: "Convolution"
+  bottom: "RDB2_7_Eltwise1"
+  top: "RDB2_7b"
+  param {name: "RDB7b_w"}
+  param {name: "RDB7b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_7b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_7b"
+  top: "RDB2_7b"
+}
+
+layer {
+  name: "RDB2_7b1"
+  type: "Convolution"
+  bottom: "RDB2_7b"
+  top: "RDB2_7b1"
+  param {name: "RDB7b1_w"}
+  param {name: "RDB7b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_7_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_7b1"
+  bottom: "RDB2_7_Eltwise1"
+  top: "RDB2_7_Eltwise2"
+}
+
+layer {
+  name: "RDB2_7c"
+  type: "Convolution"
+  bottom: "RDB2_7_Eltwise2"
+  top: "RDB2_7c"
+  param {name: "RDB7c_w"}
+  param {name: "RDB7c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_7c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_7c"
+  top: "RDB2_7c"
+}
+
+layer {
+  name: "RDB2_7c1"
+  type: "Convolution"
+  bottom: "RDB2_7c"
+  top: "RDB2_7c1"
+  param {name: "RDB7c1_w"}
+  param {name: "RDB7c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_7_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_7_Eltwise2"
+  bottom: "RDB2_7c1"
+  top: "RDB2_7_Eltwise3"
+}
+
+layer {
+  name: "RDB2_7d"
+  type: "Convolution"
+  bottom: "RDB2_7_Eltwise3"
+  top: "RDB2_7d"
+  param {name: "RDB7d_w"}
+  param {name: "RDB7d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_7d_Sum"
+	type: "Eltwise"
+	bottom: "RDB2_6d_Sum"
+	bottom: "RDB2_7d"
+	top: "RDB2_7d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB2_8a"
+  type: "Convolution"
+  bottom: "RDB2_7d_Sum"
+  top: "RDB2_8a"
+  param {name: "RDB8a_w"}
+  param {name: "RDB8a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_8a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_8a"
+  top: "RDB2_8a"
+}
+
+layer {
+  name: "RDB2_8a1"
+  type: "Convolution"
+  bottom: "RDB2_8a"
+  top: "RDB2_8a1"
+  param {name: "RDB8a1_w"}
+  param {name: "RDB8a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_8_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB2_7d_Sum"
+  bottom: "RDB2_8a1"
+  top: "RDB2_8_Eltwise1"
+}
+
+layer {
+  name: "RDB2_8b"
+  type: "Convolution"
+  bottom: "RDB2_8_Eltwise1"
+  top: "RDB2_8b"
+  param {name: "RDB8b_w"}
+  param {name: "RDB8b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_8b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_8b"
+  top: "RDB2_8b"
+}
+
+layer {
+  name: "RDB2_8b1"
+  type: "Convolution"
+  bottom: "RDB2_8b"
+  top: "RDB2_8b1"
+  param {name: "RDB8b1_w"}
+  param {name: "RDB8b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_8_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_8b1"
+  bottom: "RDB2_8_Eltwise1"
+  top: "RDB2_8_Eltwise2"
+}
+
+layer {
+  name: "RDB2_8c"
+  type: "Convolution"
+  bottom: "RDB2_8_Eltwise2"
+  top: "RDB2_8c"
+  param {name: "RDB8c_w"}
+  param {name: "RDB8c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_8c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_8c"
+  top: "RDB2_8c"
+}
+
+layer {
+  name: "RDB2_8c1"
+  type: "Convolution"
+  bottom: "RDB2_8c"
+  top: "RDB2_8c1"
+  param {name: "RDB8c1_w"}
+  param {name: "RDB8c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_8_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_8_Eltwise2"
+  bottom: "RDB2_8c1"
+  top: "RDB2_8_Eltwise3"
+}
+
+layer {
+  name: "RDB2_8d"
+  type: "Convolution"
+  bottom: "RDB2_8_Eltwise3"
+  top: "RDB2_8d"
+  param {name: "RDB8d_w"}
+  param {name: "RDB8d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_8d_Sum"
+	type: "Eltwise"
+	bottom: "RDB2_7d_Sum"
+	bottom: "RDB2_8d"
+	top: "RDB2_8d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB2_9a"
+  type: "Convolution"
+  bottom: "RDB2_8d_Sum"
+  top: "RDB2_9a"
+  param {name: "RDB9a_w"}
+  param {name: "RDB9a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_9a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_9a"
+  top: "RDB2_9a"
+}
+
+layer {
+  name: "RDB2_9a1"
+  type: "Convolution"
+  bottom: "RDB2_9a"
+  top: "RDB2_9a1"
+  param {name: "RDB9a1_w"}
+  param {name: "RDB9a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_9_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB2_8d_Sum"
+  bottom: "RDB2_9a1"
+  top: "RDB2_9_Eltwise1"
+}
+
+layer {
+  name: "RDB2_9b"
+  type: "Convolution"
+  bottom: "RDB2_9_Eltwise1"
+  top: "RDB2_9b"
+  param {name: "RDB9b_w"}
+  param {name: "RDB9b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_9b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_9b"
+  top: "RDB2_9b"
+}
+
+layer {
+  name: "RDB2_9b1"
+  type: "Convolution"
+  bottom: "RDB2_9b"
+  top: "RDB2_9b1"
+  param {name: "RDB9b1_w"}
+  param {name: "RDB9b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_9_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_9b1"
+  bottom: "RDB2_9_Eltwise1"
+  top: "RDB2_9_Eltwise2"
+}
+
+layer {
+  name: "RDB2_9c"
+  type: "Convolution"
+  bottom: "RDB2_9_Eltwise2"
+  top: "RDB2_9c"
+  param {name: "RDB9c_w"}
+  param {name: "RDB9c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_9c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_9c"
+  top: "RDB2_9c"
+}
+
+layer {
+  name: "RDB2_9c1"
+  type: "Convolution"
+  bottom: "RDB2_9c"
+  top: "RDB2_9c1"
+  param {name: "RDB9c1_w"}
+  param {name: "RDB9c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_9_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_9_Eltwise2"
+  bottom: "RDB2_9c1"
+  top: "RDB2_9_Eltwise3"
+}
+
+layer {
+  name: "RDB2_9d"
+  type: "Convolution"
+  bottom: "RDB2_9_Eltwise3"
+  top: "RDB2_9d"
+  param {name: "RDB9d_w"}
+  param {name: "RDB9d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_9d_Sum"
+	type: "Eltwise"
+	bottom: "RDB2_8d_Sum"
+	bottom: "RDB2_9d"
+	top: "RDB2_9d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB2_10a"
+  type: "Convolution"
+  bottom: "RDB2_9d_Sum"
+  top: "RDB2_10a"
+  param {name: "RDB10a_w"}
+  param {name: "RDB10a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_10a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_10a"
+  top: "RDB2_10a"
+}
+
+layer {
+  name: "RDB2_10a1"
+  type: "Convolution"
+  bottom: "RDB2_10a"
+  top: "RDB2_10a1"
+  param {name: "RDB10a1_w"}
+  param {name: "RDB10a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_10_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB2_9d_Sum"
+  bottom: "RDB2_10a1"
+  top: "RDB2_10_Eltwise1"
+}
+
+layer {
+  name: "RDB2_10b"
+  type: "Convolution"
+  bottom: "RDB2_10_Eltwise1"
+  top: "RDB2_10b"
+  param {name: "RDB10b_w"}
+  param {name: "RDB10b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_10b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_10b"
+  top: "RDB2_10b"
+}
+
+layer {
+  name: "RDB2_10b1"
+  type: "Convolution"
+  bottom: "RDB2_10b"
+  top: "RDB2_10b1"
+  param {name: "RDB10b1_w"}
+  param {name: "RDB10b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_10_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_10b1"
+  bottom: "RDB2_10_Eltwise1"
+  top: "RDB2_10_Eltwise2"
+}
+
+layer {
+  name: "RDB2_10c"
+  type: "Convolution"
+  bottom: "RDB2_10_Eltwise2"
+  top: "RDB2_10c"
+  param {name: "RDB10c_w"}
+  param {name: "RDB10c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_10c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_10c"
+  top: "RDB2_10c"
+}
+
+layer {
+  name: "RDB2_10c1"
+  type: "Convolution"
+  bottom: "RDB2_10c"
+  top: "RDB2_10c1"
+  param {name: "RDB10c1_w"}
+  param {name: "RDB10c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_10_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_10_Eltwise2"
+  bottom: "RDB2_10c1"
+  top: "RDB2_10_Eltwise3"
+}
+
+layer {
+  name: "RDB2_10d"
+  type: "Convolution"
+  bottom: "RDB2_10_Eltwise3"
+  top: "RDB2_10d"
+  param {name: "RDB10d_w"}
+  param {name: "RDB10d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_10d_Sum"
+	type: "Eltwise"
+	bottom: "RDB2_9d_Sum"
+	bottom: "RDB2_10d"
+	top: "RDB2_10d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB2_11a"
+  type: "Convolution"
+  bottom: "RDB2_10d_Sum"
+  top: "RDB2_11a"
+  param {name: "RDB11a_w"}
+  param {name: "RDB11a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_11a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_11a"
+  top: "RDB2_11a"
+}
+
+layer {
+  name: "RDB2_11a1"
+  type: "Convolution"
+  bottom: "RDB2_11a"
+  top: "RDB2_11a1"
+  param {name: "RDB11a1_w"}
+  param {name: "RDB11a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_11_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB2_10d_Sum"
+  bottom: "RDB2_11a1"
+  top: "RDB2_11_Eltwise1"
+}
+
+layer {
+  name: "RDB2_11b"
+  type: "Convolution"
+  bottom: "RDB2_11_Eltwise1"
+  top: "RDB2_11b"
+  param {name: "RDB11b_w"}
+  param {name: "RDB11b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_11b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_11b"
+  top: "RDB2_11b"
+}
+
+layer {
+  name: "RDB2_11b1"
+  type: "Convolution"
+  bottom: "RDB2_11b"
+  top: "RDB2_11b1"
+  param {name: "RDB11b1_w"}
+  param {name: "RDB11b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_11_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_11b1"
+  bottom: "RDB2_11_Eltwise1"
+  top: "RDB2_11_Eltwise2"
+}
+
+layer {
+  name: "RDB2_11c"
+  type: "Convolution"
+  bottom: "RDB2_11_Eltwise2"
+  top: "RDB2_11c"
+  param {name: "RDB11c_w"}
+  param {name: "RDB11c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_11c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_11c"
+  top: "RDB2_11c"
+}
+
+layer {
+  name: "RDB2_11c1"
+  type: "Convolution"
+  bottom: "RDB2_11c"
+  top: "RDB2_11c1"
+  param {name: "RDB11c1_w"}
+  param {name: "RDB11c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_11_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_11_Eltwise2"
+  bottom: "RDB2_11c1"
+  top: "RDB2_11_Eltwise3"
+}
+
+layer {
+  name: "RDB2_11d"
+  type: "Convolution"
+  bottom: "RDB2_11_Eltwise3"
+  top: "RDB2_11d"
+  param {name: "RDB11d_w"}
+  param {name: "RDB11d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_11d_Sum"
+	type: "Eltwise"
+	bottom: "RDB2_10d_Sum"
+	bottom: "RDB2_11d"
+	top: "RDB2_11d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB2_12a"
+  type: "Convolution"
+  bottom: "RDB2_11d_Sum"
+  top: "RDB2_12a"
+  param {name: "RDB12a_w"}
+  param {name: "RDB12a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_12a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_12a"
+  top: "RDB2_12a"
+}
+
+layer {
+  name: "RDB2_12a1"
+  type: "Convolution"
+  bottom: "RDB2_12a"
+  top: "RDB2_12a1"
+  param {name: "RDB12a1_w"}
+  param {name: "RDB12a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_12_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB2_11d_Sum"
+  bottom: "RDB2_12a1"
+  top: "RDB2_12_Eltwise1"
+}
+
+layer {
+  name: "RDB2_12b"
+  type: "Convolution"
+  bottom: "RDB2_12_Eltwise1"
+  top: "RDB2_12b"
+  param {name: "RDB12b_w"}
+  param {name: "RDB12b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_12b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_12b"
+  top: "RDB2_12b"
+}
+
+layer {
+  name: "RDB2_12b1"
+  type: "Convolution"
+  bottom: "RDB2_12b"
+  top: "RDB2_12b1"
+  param {name: "RDB12b1_w"}
+  param {name: "RDB12b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_12_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_12b1"
+  bottom: "RDB2_12_Eltwise1"
+  top: "RDB2_12_Eltwise2"
+}
+
+layer {
+  name: "RDB2_12c"
+  type: "Convolution"
+  bottom: "RDB2_12_Eltwise2"
+  top: "RDB2_12c"
+  param {name: "RDB12c_w"}
+  param {name: "RDB12c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_12c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_12c"
+  top: "RDB2_12c"
+}
+
+layer {
+  name: "RDB2_12c1"
+  type: "Convolution"
+  bottom: "RDB2_12c"
+  top: "RDB2_12c1"
+  param {name: "RDB12c1_w"}
+  param {name: "RDB12c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_12_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_12_Eltwise2"
+  bottom: "RDB2_12c1"
+  top: "RDB2_12_Eltwise3"
+}
+
+layer {
+  name: "RDB2_12d"
+  type: "Convolution"
+  bottom: "RDB2_12_Eltwise3"
+  top: "RDB2_12d"
+  param {name: "RDB12d_w"}
+  param {name: "RDB12d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_12d_Sum"
+	type: "Eltwise"
+	bottom: "RDB2_11d_Sum"
+	bottom: "RDB2_12d"
+	top: "RDB2_12d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "Dark_conv2_1"
+  type: "Convolution"
+  bottom: "RDB2_12d_Sum"
+  top: "Dark_conv2_1"
+  param {name: "Dark1_w"}
+  param {name: "Dark1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+	name: "Dark2_1_Sum"
+	type: "Eltwise"
+	bottom: "conv2_3"
+	bottom: "Dark_conv2_1"
+	top: "Dark2_1_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+#################################################
+
+#################################################
+
+layer {
+  name: "prepro4_1"
+  type: "Convolution"
+  bottom: "data_4"
+  top: "prepro4_1"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "prepro4_2"
+  type: "Convolution"
+  bottom: "prepro4_1"
+  top: "prepro4_2"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "Concat2_4_a"
+  type: "Concat"
+  bottom: "conv2_1"
+  bottom: "prepro4_2"
+  top: "Concat2_4_a"
+}
+
+layer {
+  name: "Cdarkchannel4_1"
+  type: "Convolution"
+  bottom: "Concat2_4_a"
+  top: "Cdarkchannel4_1"
+  convolution_param {
+    num_output: 3
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "Cwhitechannel4_1"
+  type: "Convolution"
+  bottom: "Concat2_4_a"
+  top: "Cwhitechannel4_1"
+  convolution_param {
+    num_output: 3
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "prepro4_2b"
+  type: "Convolution"
+  bottom: "Concat2_4_a"
+  top: "prepro4_2b"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "eltwiseDWD4_1"
+  type: "Concat"
+  bottom: "prepro4_2b"
+  bottom: "Cdarkchannel4_1"
+  bottom: "Cwhitechannel4_1"
+  top: "eltwiseDWD4_1"
+}
+
+layer {
+  name: "prepro4_3"
+  type: "Convolution"
+  bottom: "eltwiseDWD4_1"
+  top: "prepro4_3"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "conv4_1"
+  type: "Convolution"
+  bottom: "prepro4_3"
+  top: "conv4_1"
+  param {name: "conv1_w"}
+  param {name: "conv1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "conv4_2"
+  type: "Convolution"
+  bottom: "conv4_1"
+  top: "conv4_2"
+  param {name: "conv2_w"}
+  param {name: "conv2_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_1a"
+  type: "Convolution"
+  bottom: "conv4_2"
+  top: "RDB4_1a"
+  param {name: "RDB1a_w"}
+  param {name: "RDB1a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_1a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_1a"
+  top: "RDB4_1a"
+}
+
+layer {
+  name: "RDB4_1a1"
+  type: "Convolution"
+  bottom: "RDB4_1a"
+  top: "RDB4_1a1"
+  param {name: "RDB1a1_w"}
+  param {name: "RDB1a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_1_Eltwise1"
+  type: "Eltwise"
+  bottom: "conv4_2"
+  bottom: "RDB4_1a1"
+  top: "RDB4_1_Eltwise1"
+}
+
+layer {
+  name: "RDB4_1b"
+  type: "Convolution"
+  bottom: "RDB4_1_Eltwise1"
+  top: "RDB4_1b"
+  param {name: "RDB1b_w"}
+  param {name: "RDB1b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_1b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_1b"
+  top: "RDB4_1b"
+}
+
+layer {
+  name: "RDB4_1b1"
+  type: "Convolution"
+  bottom: "RDB4_1b"
+  top: "RDB4_1b1"
+  param {name: "RDB1b1_w"}
+  param {name: "RDB1b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_1_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_1b1"
+  bottom: "RDB4_1_Eltwise1"
+  top: "RDB4_1_Eltwise2"
+}
+
+layer {
+  name: "RDB4_1c"
+  type: "Convolution"
+  bottom: "RDB4_1_Eltwise2"
+  top: "RDB4_1c"
+  param {name: "RDB1c_w"}
+  param {name: "RDB1c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_1c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_1c"
+  top: "RDB4_1c"
+}
+
+layer {
+  name: "RDB4_1c1"
+  type: "Convolution"
+  bottom: "RDB4_1c"
+  top: "RDB4_1c1"
+  param {name: "RDB1c1_w"}
+  param {name: "RDB1c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_1_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_1_Eltwise2"
+  bottom: "RDB4_1c1"
+  top: "RDB4_1_Eltwise3"
+}
+
+layer {
+  name: "RDB4_1d"
+  type: "Convolution"
+  bottom: "RDB4_1_Eltwise3"
+  top: "RDB4_1d"
+  param {name: "RDB1d_w"}
+  param {name: "RDB1d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_1d_Sum"
+	type: "Eltwise"
+	bottom: "conv4_2"
+	bottom: "RDB4_1d"
+	top: "RDB4_1d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB4_2a"
+  type: "Convolution"
+  bottom: "RDB4_1d_Sum"
+  top: "RDB4_2a"
+  param {name: "RDB2a_w"}
+  param {name: "RDB2a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_2a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_2a"
+  top: "RDB4_2a"
+}
+
+layer {
+  name: "RDB4_2a1"
+  type: "Convolution"
+  bottom: "RDB4_2a"
+  top: "RDB4_2a1"
+  param {name: "RDB2a1_w"}
+  param {name: "RDB2a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_2_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB4_1d_Sum"
+  bottom: "RDB4_2a1"
+  top: "RDB4_2_Eltwise1"
+}
+
+layer {
+  name: "RDB4_2b"
+  type: "Convolution"
+  bottom: "RDB4_2_Eltwise1"
+  top: "RDB4_2b"
+  param {name: "RDB2b_w"}
+  param {name: "RDB2b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_2b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_2b"
+  top: "RDB4_2b"
+}
+
+layer {
+  name: "RDB4_2b1"
+  type: "Convolution"
+  bottom: "RDB4_2b"
+  top: "RDB4_2b1"
+  param {name: "RDB2b1_w"}
+  param {name: "RDB2b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_2_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_2b1"
+  bottom: "RDB4_2_Eltwise1"
+  top: "RDB4_2_Eltwise2"
+}
+
+layer {
+  name: "RDB4_2c"
+  type: "Convolution"
+  bottom: "RDB4_2_Eltwise2"
+  top: "RDB4_2c"
+  param {name: "RDB2c_w"}
+  param {name: "RDB2c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_2c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_2c"
+  top: "RDB4_2c"
+}
+
+layer {
+  name: "RDB4_2c1"
+  type: "Convolution"
+  bottom: "RDB4_2c"
+  top: "RDB4_2c1"
+  param {name: "RDB2c1_w"}
+  param {name: "RDB2c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_2_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_2_Eltwise2"
+  bottom: "RDB4_2c1"
+  top: "RDB4_2_Eltwise3"
+}
+
+
+layer {
+  name: "RDB4_2d"
+  type: "Convolution"
+  bottom: "RDB4_2_Eltwise3"
+  top: "RDB4_2d"
+  param {name: "RDB2d_w"}
+  param {name: "RDB2d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_2d_Sum"
+	type: "Eltwise"
+	bottom: "RDB4_1d_Sum"
+	bottom: "RDB4_2d"
+	top: "RDB4_2d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB4_3a"
+  type: "Convolution"
+  bottom: "RDB4_2d_Sum"
+  top: "RDB4_3a"
+  param {name: "RDB3a_w"}
+  param {name: "RDB3a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_3a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_3a"
+  top: "RDB4_3a"
+}
+
+layer {
+  name: "RDB4_3a1"
+  type: "Convolution"
+  bottom: "RDB4_3a"
+  top: "RDB4_3a1"
+  param {name: "RDB3a1_w"}
+  param {name: "RDB3a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_3_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB4_2d_Sum"
+  bottom: "RDB4_3a1"
+  top: "RDB4_3_Eltwise1"
+}
+
+layer {
+  name: "RDB4_3b"
+  type: "Convolution"
+  bottom: "RDB4_3_Eltwise1"
+  top: "RDB4_3b"
+  param {name: "RDB3b_w"}
+  param {name: "RDB3b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_3b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_3b"
+  top: "RDB4_3b"
+}
+
+layer {
+  name: "RDB4_3b1"
+  type: "Convolution"
+  bottom: "RDB4_3b"
+  top: "RDB4_3b1"
+  param {name: "RDB3b1_w"}
+  param {name: "RDB3b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_3_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_3b1"
+  bottom: "RDB4_3_Eltwise1"
+  top: "RDB4_3_Eltwise2"
+}
+layer {
+  name: "RDB4_3c"
+  type: "Convolution"
+  bottom: "RDB4_3_Eltwise2"
+  top: "RDB4_3c"
+  param {name: "RDB3c_w"}
+  param {name: "RDB3c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_3c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_3c"
+  top: "RDB4_3c"
+}
+
+layer {
+  name: "RDB4_3c1"
+  type: "Convolution"
+  bottom: "RDB4_3c"
+  top: "RDB4_3c1"
+  param {name: "RDB3c1_w"}
+  param {name: "RDB3c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_3_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_3_Eltwise2"
+  bottom: "RDB4_3c1"
+  top: "RDB4_3_Eltwise3"
+}
+
+layer {
+  name: "RDB4_3d"
+  type: "Convolution"
+  bottom: "RDB4_3_Eltwise3"
+  top: "RDB4_3d"
+  param {name: "RDB3d_w"}
+  param {name: "RDB3d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_3d_Sum"
+	type: "Eltwise"
+	bottom: "RDB4_2d_Sum"
+	bottom: "RDB4_3d"
+	top: "RDB4_3d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB4_4a"
+  type: "Convolution"
+  bottom: "RDB4_3d_Sum"
+  top: "RDB4_4a"
+  param {name: "RDB4a_w"}
+  param {name: "RDB4a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_4a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_4a"
+  top: "RDB4_4a"
+}
+
+layer {
+  name: "RDB4_4a1"
+  type: "Convolution"
+  bottom: "RDB4_4a"
+  top: "RDB4_4a1"
+  param {name: "RDB4a1_w"}
+  param {name: "RDB4a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_4_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB4_3d_Sum"
+  bottom: "RDB4_4a1"
+  top: "RDB4_4_Eltwise1"
+}
+
+layer {
+  name: "RDB4_4b"
+  type: "Convolution"
+  bottom: "RDB4_4_Eltwise1"
+  top: "RDB4_4b"
+  param {name: "RDB4b_w"}
+  param {name: "RDB4b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_4b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_4b"
+  top: "RDB4_4b"
+}
+
+layer {
+  name: "RDB4_4b1"
+  type: "Convolution"
+  bottom: "RDB4_4b"
+  top: "RDB4_4b1"
+  param {name: "RDB4b1_w"}
+  param {name: "RDB4b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+
+layer {
+  name: "RDB4_4_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_4b1"
+  bottom: "RDB4_4_Eltwise1"
+  top: "RDB4_4_Eltwise2"
+}
+
+layer {
+  name: "RDB4_4c"
+  type: "Convolution"
+  bottom: "RDB4_4_Eltwise2"
+  top: "RDB4_4c"
+  param {name: "RDB4c_w"}
+  param {name: "RDB4c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_4c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_4c"
+  top: "RDB4_4c"
+}
+
+layer {
+  name: "RDB4_4c1"
+  type: "Convolution"
+  bottom: "RDB4_4c"
+  top: "RDB4_4c1"
+  param {name: "RDB4c1_w"}
+  param {name: "RDB4c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+
+layer {
+  name: "RDB4_4_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_4_Eltwise2"
+  bottom: "RDB4_4c1"
+  top: "RDB4_4_Eltwise3"
+}
+
+layer {
+  name: "RDB4_4d"
+  type: "Convolution"
+  bottom: "RDB4_4_Eltwise3"
+  top: "RDB4_4d"
+  param {name: "RDB4d_w"}
+  param {name: "RDB4d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_4d_Sum"
+	type: "Eltwise"
+	bottom: "RDB4_3d_Sum"
+	bottom: "RDB4_4d"
+	top: "RDB4_4d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+####################################################
+
+layer {
+  name: "conv4_3"
+  type: "Convolution"
+  bottom: "RDB4_4d_Sum"
+  top: "conv4_3"
+  param {name: "conv3_w"}
+  param {name: "conv3_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "conv4_4"
+  type: "Convolution"
+  bottom: "conv4_3"
+  top: "conv4_4"
+  param {name: "conv4_w"}
+  param {name: "conv4_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_5a"
+  type: "Convolution"
+  bottom: "conv4_4"
+  top: "RDB4_5a"
+  param {name: "RDB5a_w"}
+  param {name: "RDB5a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_5a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_5a"
+  top: "RDB4_5a"
+}
+
+layer {
+  name: "RDB4_5a1"
+  type: "Convolution"
+  bottom: "RDB4_5a"
+  top: "RDB4_5a1"
+  param {name: "RDB5a1_w"}
+  param {name: "RDB5a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_5_Eltwise1"
+  type: "Eltwise"
+  bottom: "conv4_4"
+  bottom: "RDB4_5a1"
+  top: "RDB4_5_Eltwise1"
+}
+
+layer {
+  name: "RDB4_5b"
+  type: "Convolution"
+  bottom: "RDB4_5_Eltwise1"
+  top: "RDB4_5b"
+  param {name: "RDB5b_w"}
+  param {name: "RDB5b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_5b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_5b"
+  top: "RDB4_5b"
+}
+
+layer {
+  name: "RDB4_5b1"
+  type: "Convolution"
+  bottom: "RDB4_5b"
+  top: "RDB4_5b1"
+  param {name: "RDB5b1_w"}
+  param {name: "RDB5b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_5_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_5b1"
+  bottom: "RDB4_5_Eltwise1"
+  top: "RDB4_5_Eltwise2"
+}
+
+layer {
+  name: "RDB4_5c"
+  type: "Convolution"
+  bottom: "RDB4_5_Eltwise2"
+  top: "RDB4_5c"
+  param {name: "RDB5c_w"}
+  param {name: "RDB5c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_5c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_5c"
+  top: "RDB4_5c"
+}
+
+layer {
+  name: "RDB4_5c1"
+  type: "Convolution"
+  bottom: "RDB4_5c"
+  top: "RDB4_5c1"
+  param {name: "RDB5c1_w"}
+  param {name: "RDB5c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_5_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_5_Eltwise2"
+  bottom: "RDB4_5c1"
+  top: "RDB4_5_Eltwise3"
+}
+
+layer {
+  name: "RDB4_5d"
+  type: "Convolution"
+  bottom: "RDB4_5_Eltwise3"
+  top: "RDB4_5d"
+  param {name: "RDB5d_w"}
+  param {name: "RDB5d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_5d_Sum"
+	type: "Eltwise"
+	bottom: "conv4_4"
+	bottom: "RDB4_5d"
+	top: "RDB4_5d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB4_6a"
+  type: "Convolution"
+  bottom: "RDB4_5d_Sum"
+  top: "RDB4_6a"
+  param {name: "RDB6a_w"}
+  param {name: "RDB6a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_6a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_6a"
+  top: "RDB4_6a"
+}
+
+layer {
+  name: "RDB4_6a1"
+  type: "Convolution"
+  bottom: "RDB4_6a"
+  top: "RDB4_6a1"
+  param {name: "RDB6a1_w"}
+  param {name: "RDB6a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_6_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB4_5d_Sum"
+  bottom: "RDB4_6a1"
+  top: "RDB4_6_Eltwise1"
+}
+
+layer {
+  name: "RDB4_6b"
+  type: "Convolution"
+  bottom: "RDB4_6_Eltwise1"
+  top: "RDB4_6b"
+  param {name: "RDB6b_w"}
+  param {name: "RDB6b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_6b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_6b"
+  top: "RDB4_6b"
+}
+
+layer {
+  name: "RDB4_6b1"
+  type: "Convolution"
+  bottom: "RDB4_6b"
+  top: "RDB4_6b1"
+  param {name: "RDB6b1_w"}
+  param {name: "RDB6b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_6_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_6b1"
+  bottom: "RDB4_6_Eltwise1"
+  top: "RDB4_6_Eltwise2"
+}
+
+layer {
+  name: "RDB4_6c"
+  type: "Convolution"
+  bottom: "RDB4_6_Eltwise2"
+  top: "RDB4_6c"
+  param {name: "RDB6c_w"}
+  param {name: "RDB6c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_6c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_6c"
+  top: "RDB4_6c"
+}
+
+layer {
+  name: "RDB4_6c1"
+  type: "Convolution"
+  bottom: "RDB4_6c"
+  top: "RDB4_6c1"
+  param {name: "RDB6c1_w"}
+  param {name: "RDB6c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_6_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_6_Eltwise2"
+  bottom: "RDB4_6c1"
+  top: "RDB4_6_Eltwise3"
+}
+
+layer {
+  name: "RDB4_6d"
+  type: "Convolution"
+  bottom: "RDB4_6_Eltwise3"
+  top: "RDB4_6d"
+  param {name: "RDB6d_w"}
+  param {name: "RDB6d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_6d_Sum"
+	type: "Eltwise"
+	bottom: "RDB4_5d_Sum"
+	bottom: "RDB4_6d"
+	top: "RDB4_6d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB4_7a"
+  type: "Convolution"
+  bottom: "RDB4_6d_Sum"
+  top: "RDB4_7a"
+  param {name: "RDB7a_w"}
+  param {name: "RDB7a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_7a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_7a"
+  top: "RDB4_7a"
+}
+
+layer {
+  name: "RDB4_7a1"
+  type: "Convolution"
+  bottom: "RDB4_7a"
+  top: "RDB4_7a1"
+  param {name: "RDB7a1_w"}
+  param {name: "RDB7a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_7_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB4_6d_Sum"
+  bottom: "RDB4_7a1"
+  top: "RDB4_7_Eltwise1"
+}
+
+layer {
+  name: "RDB4_7b"
+  type: "Convolution"
+  bottom: "RDB4_7_Eltwise1"
+  top: "RDB4_7b"
+  param {name: "RDB7b_w"}
+  param {name: "RDB7b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_7b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_7b"
+  top: "RDB4_7b"
+}
+
+layer {
+  name: "RDB4_7b1"
+  type: "Convolution"
+  bottom: "RDB4_7b"
+  top: "RDB4_7b1"
+  param {name: "RDB7b1_w"}
+  param {name: "RDB7b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_7_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_7b1"
+  bottom: "RDB4_7_Eltwise1"
+  top: "RDB4_7_Eltwise2"
+}
+
+layer {
+  name: "RDB4_7c"
+  type: "Convolution"
+  bottom: "RDB4_7_Eltwise2"
+  top: "RDB4_7c"
+  param {name: "RDB7c_w"}
+  param {name: "RDB7c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_7c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_7c"
+  top: "RDB4_7c"
+}
+
+layer {
+  name: "RDB4_7c1"
+  type: "Convolution"
+  bottom: "RDB4_7c"
+  top: "RDB4_7c1"
+  param {name: "RDB7c1_w"}
+  param {name: "RDB7c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_7_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_7_Eltwise2"
+  bottom: "RDB4_7c1"
+  top: "RDB4_7_Eltwise3"
+}
+
+layer {
+  name: "RDB4_7d"
+  type: "Convolution"
+  bottom: "RDB4_7_Eltwise3"
+  top: "RDB4_7d"
+  param {name: "RDB7d_w"}
+  param {name: "RDB7d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_7d_Sum"
+	type: "Eltwise"
+	bottom: "RDB4_6d_Sum"
+	bottom: "RDB4_7d"
+	top: "RDB4_7d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB4_8a"
+  type: "Convolution"
+  bottom: "RDB4_7d_Sum"
+  top: "RDB4_8a"
+  param {name: "RDB8a_w"}
+  param {name: "RDB8a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_8a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_8a"
+  top: "RDB4_8a"
+}
+
+layer {
+  name: "RDB4_8a1"
+  type: "Convolution"
+  bottom: "RDB4_8a"
+  top: "RDB4_8a1"
+  param {name: "RDB8a1_w"}
+  param {name: "RDB8a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_8_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB4_7d_Sum"
+  bottom: "RDB4_8a1"
+  top: "RDB4_8_Eltwise1"
+}
+
+layer {
+  name: "RDB4_8b"
+  type: "Convolution"
+  bottom: "RDB4_8_Eltwise1"
+  top: "RDB4_8b"
+  param {name: "RDB8b_w"}
+  param {name: "RDB8b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_8b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_8b"
+  top: "RDB4_8b"
+}
+
+layer {
+  name: "RDB4_8b1"
+  type: "Convolution"
+  bottom: "RDB4_8b"
+  top: "RDB4_8b1"
+  param {name: "RDB8b1_w"}
+  param {name: "RDB8b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_8_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_8b1"
+  bottom: "RDB4_8_Eltwise1"
+  top: "RDB4_8_Eltwise2"
+}
+
+layer {
+  name: "RDB4_8c"
+  type: "Convolution"
+  bottom: "RDB4_8_Eltwise2"
+  top: "RDB4_8c"
+  param {name: "RDB8c_w"}
+  param {name: "RDB8c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_8c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_8c"
+  top: "RDB4_8c"
+}
+
+layer {
+  name: "RDB4_8c1"
+  type: "Convolution"
+  bottom: "RDB4_8c"
+  top: "RDB4_8c1"
+  param {name: "RDB8c1_w"}
+  param {name: "RDB8c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_8_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_8_Eltwise2"
+  bottom: "RDB4_8c1"
+  top: "RDB4_8_Eltwise3"
+}
+
+layer {
+  name: "RDB4_8d"
+  type: "Convolution"
+  bottom: "RDB4_8_Eltwise3"
+  top: "RDB4_8d"
+  param {name: "RDB8d_w"}
+  param {name: "RDB8d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_8d_Sum"
+	type: "Eltwise"
+	bottom: "RDB4_7d_Sum"
+	bottom: "RDB4_8d"
+	top: "RDB4_8d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB4_9a"
+  type: "Convolution"
+  bottom: "RDB4_8d_Sum"
+  top: "RDB4_9a"
+  param {name: "RDB9a_w"}
+  param {name: "RDB9a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_9a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_9a"
+  top: "RDB4_9a"
+}
+
+layer {
+  name: "RDB4_9a1"
+  type: "Convolution"
+  bottom: "RDB4_9a"
+  top: "RDB4_9a1"
+  param {name: "RDB9a1_w"}
+  param {name: "RDB9a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_9_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB4_8d_Sum"
+  bottom: "RDB4_9a1"
+  top: "RDB4_9_Eltwise1"
+}
+
+layer {
+  name: "RDB4_9b"
+  type: "Convolution"
+  bottom: "RDB4_9_Eltwise1"
+  top: "RDB4_9b"
+  param {name: "RDB9b_w"}
+  param {name: "RDB9b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_9b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_9b"
+  top: "RDB4_9b"
+}
+
+layer {
+  name: "RDB4_9b1"
+  type: "Convolution"
+  bottom: "RDB4_9b"
+  top: "RDB4_9b1"
+  param {name: "RDB9b1_w"}
+  param {name: "RDB9b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_9_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_9b1"
+  bottom: "RDB4_9_Eltwise1"
+  top: "RDB4_9_Eltwise2"
+}
+
+layer {
+  name: "RDB4_9c"
+  type: "Convolution"
+  bottom: "RDB4_9_Eltwise2"
+  top: "RDB4_9c"
+  param {name: "RDB9c_w"}
+  param {name: "RDB9c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_9c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_9c"
+  top: "RDB4_9c"
+}
+
+layer {
+  name: "RDB4_9c1"
+  type: "Convolution"
+  bottom: "RDB4_9c"
+  top: "RDB4_9c1"
+  param {name: "RDB9c1_w"}
+  param {name: "RDB9c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_9_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_9_Eltwise2"
+  bottom: "RDB4_9c1"
+  top: "RDB4_9_Eltwise3"
+}
+
+layer {
+  name: "RDB4_9d"
+  type: "Convolution"
+  bottom: "RDB4_9_Eltwise3"
+  top: "RDB4_9d"
+  param {name: "RDB9d_w"}
+  param {name: "RDB9d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_9d_Sum"
+	type: "Eltwise"
+	bottom: "RDB4_8d_Sum"
+	bottom: "RDB4_9d"
+	top: "RDB4_9d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB4_10a"
+  type: "Convolution"
+  bottom: "RDB4_9d_Sum"
+  top: "RDB4_10a"
+  param {name: "RDB10a_w"}
+  param {name: "RDB10a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_10a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_10a"
+  top: "RDB4_10a"
+}
+
+layer {
+  name: "RDB4_10a1"
+  type: "Convolution"
+  bottom: "RDB4_10a"
+  top: "RDB4_10a1"
+  param {name: "RDB10a1_w"}
+  param {name: "RDB10a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_10_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB4_9d_Sum"
+  bottom: "RDB4_10a1"
+  top: "RDB4_10_Eltwise1"
+}
+
+layer {
+  name: "RDB4_10b"
+  type: "Convolution"
+  bottom: "RDB4_10_Eltwise1"
+  top: "RDB4_10b"
+  param {name: "RDB10b_w"}
+  param {name: "RDB10b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_10b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_10b"
+  top: "RDB4_10b"
+}
+
+layer {
+  name: "RDB4_10b1"
+  type: "Convolution"
+  bottom: "RDB4_10b"
+  top: "RDB4_10b1"
+  param {name: "RDB10b1_w"}
+  param {name: "RDB10b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_10_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_10b1"
+  bottom: "RDB4_10_Eltwise1"
+  top: "RDB4_10_Eltwise2"
+}
+
+layer {
+  name: "RDB4_10c"
+  type: "Convolution"
+  bottom: "RDB4_10_Eltwise2"
+  top: "RDB4_10c"
+  param {name: "RDB10c_w"}
+  param {name: "RDB10c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_10c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_10c"
+  top: "RDB4_10c"
+}
+
+layer {
+  name: "RDB4_10c1"
+  type: "Convolution"
+  bottom: "RDB4_10c"
+  top: "RDB4_10c1"
+  param {name: "RDB10c1_w"}
+  param {name: "RDB10c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_10_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_10_Eltwise2"
+  bottom: "RDB4_10c1"
+  top: "RDB4_10_Eltwise3"
+}
+
+layer {
+  name: "RDB4_10d"
+  type: "Convolution"
+  bottom: "RDB4_10_Eltwise3"
+  top: "RDB4_10d"
+  param {name: "RDB10d_w"}
+  param {name: "RDB10d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_10d_Sum"
+	type: "Eltwise"
+	bottom: "RDB4_9d_Sum"
+	bottom: "RDB4_10d"
+	top: "RDB4_10d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB4_11a"
+  type: "Convolution"
+  bottom: "RDB4_10d_Sum"
+  top: "RDB4_11a"
+  param {name: "RDB11a_w"}
+  param {name: "RDB11a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_11a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_11a"
+  top: "RDB4_11a"
+}
+
+layer {
+  name: "RDB4_11a1"
+  type: "Convolution"
+  bottom: "RDB4_11a"
+  top: "RDB4_11a1"
+  param {name: "RDB11a1_w"}
+  param {name: "RDB11a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_11_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB4_10d_Sum"
+  bottom: "RDB4_11a1"
+  top: "RDB4_11_Eltwise1"
+}
+
+layer {
+  name: "RDB4_11b"
+  type: "Convolution"
+  bottom: "RDB4_11_Eltwise1"
+  top: "RDB4_11b"
+  param {name: "RDB11b_w"}
+  param {name: "RDB11b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_11b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_11b"
+  top: "RDB4_11b"
+}
+
+layer {
+  name: "RDB4_11b1"
+  type: "Convolution"
+  bottom: "RDB4_11b"
+  top: "RDB4_11b1"
+  param {name: "RDB11b1_w"}
+  param {name: "RDB11b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_11_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_11b1"
+  bottom: "RDB4_11_Eltwise1"
+  top: "RDB4_11_Eltwise2"
+}
+
+layer {
+  name: "RDB4_11c"
+  type: "Convolution"
+  bottom: "RDB4_11_Eltwise2"
+  top: "RDB4_11c"
+  param {name: "RDB11c_w"}
+  param {name: "RDB11c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_11c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_11c"
+  top: "RDB4_11c"
+}
+
+layer {
+  name: "RDB4_11c1"
+  type: "Convolution"
+  bottom: "RDB4_11c"
+  top: "RDB4_11c1"
+  param {name: "RDB11c1_w"}
+  param {name: "RDB11c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_11_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_11_Eltwise2"
+  bottom: "RDB4_11c1"
+  top: "RDB4_11_Eltwise3"
+}
+
+layer {
+  name: "RDB4_11d"
+  type: "Convolution"
+  bottom: "RDB4_11_Eltwise3"
+  top: "RDB4_11d"
+  param {name: "RDB11d_w"}
+  param {name: "RDB11d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_11d_Sum"
+	type: "Eltwise"
+	bottom: "RDB4_10d_Sum"
+	bottom: "RDB4_11d"
+	top: "RDB4_11d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB4_12a"
+  type: "Convolution"
+  bottom: "RDB4_11d_Sum"
+  top: "RDB4_12a"
+  param {name: "RDB12a_w"}
+  param {name: "RDB12a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_12a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_12a"
+  top: "RDB4_12a"
+}
+
+layer {
+  name: "RDB4_12a1"
+  type: "Convolution"
+  bottom: "RDB4_12a"
+  top: "RDB4_12a1"
+  param {name: "RDB12a1_w"}
+  param {name: "RDB12a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_12_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB4_11d_Sum"
+  bottom: "RDB4_12a1"
+  top: "RDB4_12_Eltwise1"
+}
+
+layer {
+  name: "RDB4_12b"
+  type: "Convolution"
+  bottom: "RDB4_12_Eltwise1"
+  top: "RDB4_12b"
+  param {name: "RDB12b_w"}
+  param {name: "RDB12b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_12b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_12b"
+  top: "RDB4_12b"
+}
+
+layer {
+  name: "RDB4_12b1"
+  type: "Convolution"
+  bottom: "RDB4_12b"
+  top: "RDB4_12b1"
+  param {name: "RDB12b1_w"}
+  param {name: "RDB12b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_12_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_12b1"
+  bottom: "RDB4_12_Eltwise1"
+  top: "RDB4_12_Eltwise2"
+}
+
+layer {
+  name: "RDB4_12c"
+  type: "Convolution"
+  bottom: "RDB4_12_Eltwise2"
+  top: "RDB4_12c"
+  param {name: "RDB12c_w"}
+  param {name: "RDB12c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_12c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_12c"
+  top: "RDB4_12c"
+}
+
+layer {
+  name: "RDB4_12c1"
+  type: "Convolution"
+  bottom: "RDB4_12c"
+  top: "RDB4_12c1"
+  param {name: "RDB12c1_w"}
+  param {name: "RDB12c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_12_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_12_Eltwise2"
+  bottom: "RDB4_12c1"
+  top: "RDB4_12_Eltwise3"
+}
+
+layer {
+  name: "RDB4_12d"
+  type: "Convolution"
+  bottom: "RDB4_12_Eltwise3"
+  top: "RDB4_12d"
+  param {name: "RDB12d_w"}
+  param {name: "RDB12d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_12d_Sum"
+	type: "Eltwise"
+	bottom: "RDB4_11d_Sum"
+	bottom: "RDB4_12d"
+	top: "RDB4_12d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "Dark_conv4_1"
+  type: "Convolution"
+  bottom: "RDB4_12d_Sum"
+  top: "Dark_conv4_1"
+  param {name: "Dark1_w"}
+  param {name: "Dark1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+	name: "Dark4_1_Sum"
+	type: "Eltwise"
+	bottom: "conv4_3"
+	bottom: "Dark_conv4_1"
+	top: "Dark4_1_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+################################################
+###############################################
+layer {
+  name: "up4_1"
+  type: "Dtow"
+  bottom: "Dark4_1_Sum"
+  top: "up4_1"
+  dtow_param {
+    psize: 2
+  }
+}
+
+layer {
+  name: "conv4_5"
+  type: "Convolution"
+  bottom: "up4_1"
+  top: "conv4_5"
+  param {name: "conv5_w"}
+  param {name: "conv5_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_13a"
+  type: "Convolution"
+  bottom: "conv4_5"
+  top: "RDB4_13a"
+  param {name: "RDB13a_w"}
+  param {name: "RDB13a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_13a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_13a"
+  top: "RDB4_13a"
+}
+
+layer {
+  name: "RDB4_13a1"
+  type: "Convolution"
+  bottom: "RDB4_13a"
+  top: "RDB4_13a1"
+  param {name: "RDB13a1_w"}
+  param {name: "RDB13a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_13_Eltwise1"
+  type: "Eltwise"
+  bottom: "conv4_5"
+  bottom: "RDB4_13a1"
+  top: "RDB4_13_Eltwise1"
+}
+
+layer {
+  name: "RDB4_13b"
+  type: "Convolution"
+  bottom: "RDB4_13_Eltwise1"
+  top: "RDB4_13b"
+  param {name: "RDB13b_w"}
+  param {name: "RDB13b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_13b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_13b"
+  top: "RDB4_13b"
+}
+
+layer {
+  name: "RDB4_13b1"
+  type: "Convolution"
+  bottom: "RDB4_13b"
+  top: "RDB4_13b1"
+  param {name: "RDB13b1_w"}
+  param {name: "RDB13b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_13_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_13b1"
+  bottom: "RDB4_13_Eltwise1"
+  top: "RDB4_13_Eltwise2"
+}
+
+layer {
+  name: "RDB4_13c"
+  type: "Convolution"
+  bottom: "RDB4_13_Eltwise2"
+  top: "RDB4_13c"
+  param {name: "RDB13c_w"}
+  param {name: "RDB13c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_13c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_13c"
+  top: "RDB4_13c"
+}
+
+layer {
+  name: "RDB4_13c1"
+  type: "Convolution"
+  bottom: "RDB4_13c"
+  top: "RDB4_13c1"
+  param {name: "RDB13c1_w"}
+  param {name: "RDB13c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_13_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_13_Eltwise2"
+  bottom: "RDB4_13c1"
+  top: "RDB4_13_Eltwise3"
+}
+
+layer {
+  name: "RDB4_13d"
+  type: "Convolution"
+  bottom: "RDB4_13_Eltwise3"
+  top: "RDB4_13d"
+  param {name: "RDB13d_w"}
+  param {name: "RDB13d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_13d_Sum"
+	type: "Eltwise"
+	bottom: "conv4_5"
+	bottom: "RDB4_13d"
+	top: "RDB4_13d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB4_14a"
+  type: "Convolution"
+  bottom: "RDB4_13d_Sum"
+  top: "RDB4_14a"
+  param {name: "RDB14a_w"}
+  param {name: "RDB14a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_14a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_14a"
+  top: "RDB4_14a"
+}
+
+layer {
+  name: "RDB4_14a1"
+  type: "Convolution"
+  bottom: "RDB4_14a"
+  top: "RDB4_14a1"
+  param {name: "RDB14a1_w"}
+  param {name: "RDB14a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_14_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB4_13d_Sum"
+  bottom: "RDB4_14a1"
+  top: "RDB4_14_Eltwise1"
+}
+
+layer {
+  name: "RDB4_14b"
+  type: "Convolution"
+  bottom: "RDB4_14_Eltwise1"
+  top: "RDB4_14b"
+  param {name: "RDB14b_w"}
+  param {name: "RDB14b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_14b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_14b"
+  top: "RDB4_14b"
+}
+
+layer {
+  name: "RDB4_14b1"
+  type: "Convolution"
+  bottom: "RDB4_14b"
+  top: "RDB4_14b1"
+  param {name: "RDB14b1_w"}
+  param {name: "RDB14b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_14_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_14b1"
+  bottom: "RDB4_14_Eltwise1"
+  top: "RDB4_14_Eltwise2"
+}
+
+layer {
+  name: "RDB4_14c"
+  type: "Convolution"
+  bottom: "RDB4_14_Eltwise2"
+  top: "RDB4_14c"
+  param {name: "RDB14c_w"}
+  param {name: "RDB14c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_14c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_14c"
+  top: "RDB4_14c"
+}
+
+layer {
+  name: "RDB4_14c1"
+  type: "Convolution"
+  bottom: "RDB4_14c"
+  top: "RDB4_14c1"
+  param {name: "RDB14c1_w"}
+  param {name: "RDB14c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_14_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_14_Eltwise2"
+  bottom: "RDB4_14c1"
+  top: "RDB4_14_Eltwise3"
+}
+
+layer {
+  name: "RDB4_14d"
+  type: "Convolution"
+  bottom: "RDB4_14_Eltwise3"
+  top: "RDB4_14d"
+  param {name: "RDB14d_w"}
+  param {name: "RDB14d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_14d_Sum"
+	type: "Eltwise"
+	bottom: "RDB4_13d_Sum"
+	bottom: "RDB4_14d"
+	top: "RDB4_14d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB4_15a"
+  type: "Convolution"
+  bottom: "RDB4_14d_Sum"
+  top: "RDB4_15a"
+  param {name: "RDB15a_w"}
+  param {name: "RDB15a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_15a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_15a"
+  top: "RDB4_15a"
+}
+
+layer {
+  name: "RDB4_15a1"
+  type: "Convolution"
+  bottom: "RDB4_15a"
+  top: "RDB4_15a1"
+  param {name: "RDB15a1_w"}
+  param {name: "RDB15a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_15_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB4_14d_Sum"
+  bottom: "RDB4_15a1"
+  top: "RDB4_15_Eltwise1"
+}
+
+layer {
+  name: "RDB4_15b"
+  type: "Convolution"
+  bottom: "RDB4_15_Eltwise1"
+  top: "RDB4_15b"
+  param {name: "RDB15b_w"}
+  param {name: "RDB15b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_15b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_15b"
+  top: "RDB4_15b"
+}
+
+layer {
+  name: "RDB4_15b1"
+  type: "Convolution"
+  bottom: "RDB4_15b"
+  top: "RDB4_15b1"
+  param {name: "RDB15b1_w"}
+  param {name: "RDB15b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_15_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_15b1"
+  bottom: "RDB4_15_Eltwise1"
+  top: "RDB4_15_Eltwise2"
+}
+
+layer {
+  name: "RDB4_15c"
+  type: "Convolution"
+  bottom: "RDB4_15_Eltwise2"
+  top: "RDB4_15c"
+  param {name: "RDB15c_w"}
+  param {name: "RDB15c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_15c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_15c"
+  top: "RDB4_15c"
+}
+
+layer {
+  name: "RDB4_15c1"
+  type: "Convolution"
+  bottom: "RDB4_15c"
+  top: "RDB4_15c1"
+  param {name: "RDB15c1_w"}
+  param {name: "RDB15c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_15_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_15_Eltwise2"
+  bottom: "RDB4_15c1"
+  top: "RDB4_15_Eltwise3"
+}
+
+layer {
+  name: "RDB4_15d"
+  type: "Convolution"
+  bottom: "RDB4_15_Eltwise3"
+  top: "RDB4_15d"
+  param {name: "RDB15d_w"}
+  param {name: "RDB15d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_15d_Sum"
+	type: "Eltwise"
+	bottom: "RDB4_14d_Sum"
+	bottom: "RDB4_15d"
+	top: "RDB4_15d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB4_16a"
+  type: "Convolution"
+  bottom: "RDB4_15d_Sum"
+  top: "RDB4_16a"
+  param {name: "RDB16a_w"}
+  param {name: "RDB16a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_16a_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_16a"
+  top: "RDB4_16a"
+}
+
+layer {
+  name: "RDB4_16a1"
+  type: "Convolution"
+  bottom: "RDB4_16a"
+  top: "RDB4_16a1"
+  param {name: "RDB16a1_w"}
+  param {name: "RDB16a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_16_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB4_15d_Sum"
+  bottom: "RDB4_16a1"
+  top: "RDB4_16_Eltwise1"
+}
+
+layer {
+  name: "RDB4_16b"
+  type: "Convolution"
+  bottom: "RDB4_16_Eltwise1"
+  top: "RDB4_16b"
+  param {name: "RDB16b_w"}
+  param {name: "RDB16b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB4_16b_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_16b"
+  top: "RDB4_16b"
+}
+
+layer {
+  name: "RDB4_16b1"
+  type: "Convolution"
+  bottom: "RDB4_16b"
+  top: "RDB4_16b1"
+  param {name: "RDB16b1_w"}
+  param {name: "RDB16b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_16_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB4_16b1"
+  bottom: "RDB4_16_Eltwise1"
+  top: "RDB4_16_Eltwise2"
+}
+
+layer {
+  name: "RDB4_16c"
+  type: "Convolution"
+  bottom: "RDB4_16_Eltwise2"
+  top: "RDB4_16c"
+  param {name: "RDB16c_w"}
+  param {name: "RDB16c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB4_16c_PReLU"
+  type: "PReLU"
+  bottom: "RDB4_16c"
+  top: "RDB4_16c"
+}
+
+layer {
+  name: "RDB4_16c1"
+  type: "Convolution"
+  bottom: "RDB4_16c"
+  top: "RDB4_16c1"
+  param {name: "RDB16c1_w"}
+  param {name: "RDB16c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB4_16_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB4_16_Eltwise2"
+  bottom: "RDB4_16c1"
+  top: "RDB4_16_Eltwise3"
+}
+
+layer {
+  name: "RDB4_16d"
+  type: "Convolution"
+  bottom: "RDB4_16_Eltwise3"
+  top: "RDB4_16d"
+  param {name: "RDB16d_w"}
+  param {name: "RDB16d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB4_16d_Sum"
+	type: "Eltwise"
+	bottom: "RDB4_15d_Sum"
+	bottom: "RDB4_16d"
+	top: "RDB4_16d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "Dark_conv4_2"
+  type: "Convolution"
+  bottom: "RDB4_16d_Sum"
+  top: "Dark_conv4_2"
+  param {name: "Dark2_w"}
+  param {name: "Dark2_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+	name: "Dark4_2_Sum"
+	type: "Eltwise"
+	bottom: "conv4_1"
+	bottom: "Dark_conv4_2"
+	top: "Dark4_2_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "conv4_6"
+  type: "Convolution"
+  bottom: "Dark4_2_Sum"
+  top: "conv4_6"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "up4_2"
+  type: "Dtow"
+  bottom: "conv4_6"
+  top: "up4_2"
+  dtow_param {
+    psize: 2
+  }
+}
+
+layer {
+  name: "prepro4_4"
+  type: "Convolution"
+  bottom: "up4_2"
+  top: "prepro4_4"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+	name: "Sum4_1"
+	type: "Eltwise"
+	bottom: "prepro4_3"
+	bottom: "prepro4_4"
+	top: "Sum4_1"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "Cdarkchannel4_2"
+  type: "Convolution"
+  bottom: "Sum4_1"
+  top: "Cdarkchannel4_2"
+  convolution_param {
+    num_output: 3
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "Cwhitechannel4_2"
+  type: "Convolution"
+  bottom: "Sum4_1"
+  top: "Cwhitechannel4_2"
+  convolution_param {
+    num_output: 3
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "Sum4_2"
+  type: "Convolution"
+  bottom: "Sum4_1"
+  top: "Sum4_2"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "eltwiseDWD4_2"
+  type: "Concat"
+  bottom: "Sum4_2"
+  bottom: "Cdarkchannel4_2"
+  bottom: "Cwhitechannel4_2"
+  top: "eltwiseDWD4_2"
+}
+
+layer {
+  name: "prepro4_5"
+  type: "Convolution"
+  bottom: "eltwiseDWD4_2"
+  top: "prepro4_5"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+#################################################
+
+#################################################
+
+layer {
+  name: "up2_1"
+  type: "Dtow"
+  bottom: "Dark2_1_Sum"
+  top: "up2_1"
+  dtow_param {
+    psize: 2
+  }
+}
+
+layer {
+  name: "conv2_5"
+  type: "Convolution"
+  bottom: "up2_1"
+  top: "conv2_5"
+  param {name: "conv5_w"}
+  param {name: "conv5_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_13a"
+  type: "Convolution"
+  bottom: "conv2_5"
+  top: "RDB2_13a"
+  param {name: "RDB13a_w"}
+  param {name: "RDB13a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_13a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_13a"
+  top: "RDB2_13a"
+}
+
+layer {
+  name: "RDB2_13a1"
+  type: "Convolution"
+  bottom: "RDB2_13a"
+  top: "RDB2_13a1"
+  param {name: "RDB13a1_w"}
+  param {name: "RDB13a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_13_Eltwise1"
+  type: "Eltwise"
+  bottom: "conv2_5"
+  bottom: "RDB2_13a1"
+  top: "RDB2_13_Eltwise1"
+}
+
+layer {
+  name: "RDB2_13b"
+  type: "Convolution"
+  bottom: "RDB2_13_Eltwise1"
+  top: "RDB2_13b"
+  param {name: "RDB13b_w"}
+  param {name: "RDB13b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_13b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_13b"
+  top: "RDB2_13b"
+}
+
+layer {
+  name: "RDB2_13b1"
+  type: "Convolution"
+  bottom: "RDB2_13b"
+  top: "RDB2_13b1"
+  param {name: "RDB13b1_w"}
+  param {name: "RDB13b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_13_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_13b1"
+  bottom: "RDB2_13_Eltwise1"
+  top: "RDB2_13_Eltwise2"
+}
+
+layer {
+  name: "RDB2_13c"
+  type: "Convolution"
+  bottom: "RDB2_13_Eltwise2"
+  top: "RDB2_13c"
+  param {name: "RDB13c_w"}
+  param {name: "RDB13c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_13c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_13c"
+  top: "RDB2_13c"
+}
+
+layer {
+  name: "RDB2_13c1"
+  type: "Convolution"
+  bottom: "RDB2_13c"
+  top: "RDB2_13c1"
+  param {name: "RDB13c1_w"}
+  param {name: "RDB13c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_13_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_13_Eltwise2"
+  bottom: "RDB2_13c1"
+  top: "RDB2_13_Eltwise3"
+}
+
+layer {
+  name: "RDB2_13d"
+  type: "Convolution"
+  bottom: "RDB2_13_Eltwise3"
+  top: "RDB2_13d"
+  param {name: "RDB13d_w"}
+  param {name: "RDB13d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_13d_Sum"
+	type: "Eltwise"
+	bottom: "conv2_5"
+	bottom: "RDB2_13d"
+	top: "RDB2_13d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB2_14a"
+  type: "Convolution"
+  bottom: "RDB2_13d_Sum"
+  top: "RDB2_14a"
+  param {name: "RDB14a_w"}
+  param {name: "RDB14a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_14a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_14a"
+  top: "RDB2_14a"
+}
+
+layer {
+  name: "RDB2_14a1"
+  type: "Convolution"
+  bottom: "RDB2_14a"
+  top: "RDB2_14a1"
+  param {name: "RDB14a1_w"}
+  param {name: "RDB14a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_14_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB2_13d_Sum"
+  bottom: "RDB2_14a1"
+  top: "RDB2_14_Eltwise1"
+}
+
+layer {
+  name: "RDB2_14b"
+  type: "Convolution"
+  bottom: "RDB2_14_Eltwise1"
+  top: "RDB2_14b"
+  param {name: "RDB14b_w"}
+  param {name: "RDB14b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_14b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_14b"
+  top: "RDB2_14b"
+}
+
+layer {
+  name: "RDB2_14b1"
+  type: "Convolution"
+  bottom: "RDB2_14b"
+  top: "RDB2_14b1"
+  param {name: "RDB14b1_w"}
+  param {name: "RDB14b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_14_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_14b1"
+  bottom: "RDB2_14_Eltwise1"
+  top: "RDB2_14_Eltwise2"
+}
+
+layer {
+  name: "RDB2_14c"
+  type: "Convolution"
+  bottom: "RDB2_14_Eltwise2"
+  top: "RDB2_14c"
+  param {name: "RDB14c_w"}
+  param {name: "RDB14c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_14c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_14c"
+  top: "RDB2_14c"
+}
+
+layer {
+  name: "RDB2_14c1"
+  type: "Convolution"
+  bottom: "RDB2_14c"
+  top: "RDB2_14c1"
+  param {name: "RDB14c1_w"}
+  param {name: "RDB14c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_14_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_14_Eltwise2"
+  bottom: "RDB2_14c1"
+  top: "RDB2_14_Eltwise3"
+}
+
+layer {
+  name: "RDB2_14d"
+  type: "Convolution"
+  bottom: "RDB2_14_Eltwise3"
+  top: "RDB2_14d"
+  param {name: "RDB14d_w"}
+  param {name: "RDB14d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_14d_Sum"
+	type: "Eltwise"
+	bottom: "RDB2_13d_Sum"
+	bottom: "RDB2_14d"
+	top: "RDB2_14d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB2_15a"
+  type: "Convolution"
+  bottom: "RDB2_14d_Sum"
+  top: "RDB2_15a"
+  param {name: "RDB15a_w"}
+  param {name: "RDB15a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_15a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_15a"
+  top: "RDB2_15a"
+}
+
+layer {
+  name: "RDB2_15a1"
+  type: "Convolution"
+  bottom: "RDB2_15a"
+  top: "RDB2_15a1"
+  param {name: "RDB15a1_w"}
+  param {name: "RDB15a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_15_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB2_14d_Sum"
+  bottom: "RDB2_15a1"
+  top: "RDB2_15_Eltwise1"
+}
+
+layer {
+  name: "RDB2_15b"
+  type: "Convolution"
+  bottom: "RDB2_15_Eltwise1"
+  top: "RDB2_15b"
+  param {name: "RDB15b_w"}
+  param {name: "RDB15b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_15b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_15b"
+  top: "RDB2_15b"
+}
+
+layer {
+  name: "RDB2_15b1"
+  type: "Convolution"
+  bottom: "RDB2_15b"
+  top: "RDB2_15b1"
+  param {name: "RDB15b1_w"}
+  param {name: "RDB15b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_15_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_15b1"
+  bottom: "RDB2_15_Eltwise1"
+  top: "RDB2_15_Eltwise2"
+}
+
+layer {
+  name: "RDB2_15c"
+  type: "Convolution"
+  bottom: "RDB2_15_Eltwise2"
+  top: "RDB2_15c"
+  param {name: "RDB15c_w"}
+  param {name: "RDB15c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_15c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_15c"
+  top: "RDB2_15c"
+}
+
+layer {
+  name: "RDB2_15c1"
+  type: "Convolution"
+  bottom: "RDB2_15c"
+  top: "RDB2_15c1"
+  param {name: "RDB15c1_w"}
+  param {name: "RDB15c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_15_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_15_Eltwise2"
+  bottom: "RDB2_15c1"
+  top: "RDB2_15_Eltwise3"
+}
+
+layer {
+  name: "RDB2_15d"
+  type: "Convolution"
+  bottom: "RDB2_15_Eltwise3"
+  top: "RDB2_15d"
+  param {name: "RDB15d_w"}
+  param {name: "RDB15d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_15d_Sum"
+	type: "Eltwise"
+	bottom: "RDB2_14d_Sum"
+	bottom: "RDB2_15d"
+	top: "RDB2_15d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB2_16a"
+  type: "Convolution"
+  bottom: "RDB2_15d_Sum"
+  top: "RDB2_16a"
+  param {name: "RDB16a_w"}
+  param {name: "RDB16a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_16a_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_16a"
+  top: "RDB2_16a"
+}
+
+layer {
+  name: "RDB2_16a1"
+  type: "Convolution"
+  bottom: "RDB2_16a"
+  top: "RDB2_16a1"
+  param {name: "RDB16a1_w"}
+  param {name: "RDB16a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_16_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB2_15d_Sum"
+  bottom: "RDB2_16a1"
+  top: "RDB2_16_Eltwise1"
+}
+
+layer {
+  name: "RDB2_16b"
+  type: "Convolution"
+  bottom: "RDB2_16_Eltwise1"
+  top: "RDB2_16b"
+  param {name: "RDB16b_w"}
+  param {name: "RDB16b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB2_16b_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_16b"
+  top: "RDB2_16b"
+}
+
+layer {
+  name: "RDB2_16b1"
+  type: "Convolution"
+  bottom: "RDB2_16b"
+  top: "RDB2_16b1"
+  param {name: "RDB16b1_w"}
+  param {name: "RDB16b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_16_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB2_16b1"
+  bottom: "RDB2_16_Eltwise1"
+  top: "RDB2_16_Eltwise2"
+}
+
+layer {
+  name: "RDB2_16c"
+  type: "Convolution"
+  bottom: "RDB2_16_Eltwise2"
+  top: "RDB2_16c"
+  param {name: "RDB16c_w"}
+  param {name: "RDB16c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB2_16c_PReLU"
+  type: "PReLU"
+  bottom: "RDB2_16c"
+  top: "RDB2_16c"
+}
+
+layer {
+  name: "RDB2_16c1"
+  type: "Convolution"
+  bottom: "RDB2_16c"
+  top: "RDB2_16c1"
+  param {name: "RDB16c1_w"}
+  param {name: "RDB16c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB2_16_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB2_16_Eltwise2"
+  bottom: "RDB2_16c1"
+  top: "RDB2_16_Eltwise3"
+}
+
+layer {
+  name: "RDB2_16d"
+  type: "Convolution"
+  bottom: "RDB2_16_Eltwise3"
+  top: "RDB2_16d"
+  param {name: "RDB16d_w"}
+  param {name: "RDB16d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB2_16d_Sum"
+	type: "Eltwise"
+	bottom: "RDB2_15d_Sum"
+	bottom: "RDB2_16d"
+	top: "RDB2_16d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "Dark_conv2_2"
+  type: "Convolution"
+  bottom: "RDB2_16d_Sum"
+  top: "Dark_conv2_2"
+  param {name: "Dark2_w"}
+  param {name: "Dark2_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+	name: "Dark2_2_Sum"
+	type: "Eltwise"
+	bottom: "conv2_1"
+	bottom: "Dark_conv2_2"
+	top: "Dark2_2_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "Concat2_4_b"
+  type: "Concat"
+  bottom: "Dark2_2_Sum"
+  bottom: "prepro4_5"
+  top: "Concat2_4_b"
+}
+
+layer {
+  name: "conv2_6"
+  type: "Convolution"
+  bottom: "Concat2_4_b"
+  top: "conv2_6"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "up2_2"
+  type: "Dtow"
+  bottom: "conv2_6"
+  top: "up2_2"
+  dtow_param {
+    psize: 2
+  }
+}
+
+layer {
+  name: "prepro2_4"
+  type: "Convolution"
+  bottom: "up2_2"
+  top: "prepro2_4"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+	name: "Sum2_1"
+	type: "Eltwise"
+	bottom: "prepro2_3"
+	bottom: "prepro2_4"
+	top: "Sum2_1"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "Cdarkchannel2_2"
+  type: "Convolution"
+  bottom: "Sum2_1"
+  top: "Cdarkchannel2_2"
+  convolution_param {
+    num_output: 3
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "Cwhitechannel2_2"
+  type: "Convolution"
+  bottom: "Sum2_1"
+  top: "Cwhitechannel2_2"
+  convolution_param {
+    num_output: 3
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "Sum2_2"
+  type: "Convolution"
+  bottom: "Sum2_1"
+  top: "Sum2_2"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "eltwiseDWD2_2"
+  type: "Concat"
+  bottom: "Sum2_2"
+  bottom: "Cdarkchannel2_2"
+  bottom: "Cwhitechannel2_2"
+  top: "eltwiseDWD2_2"
+}
+
+layer {
+  name: "prepro2_5"
+  type: "Convolution"
+  bottom: "eltwiseDWD2_2"
+  top: "prepro2_5"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+####################################################
+
+
+
+####################################################
+
+layer {
+  name: "conv1_3"
+  type: "Convolution"
+  bottom: "RDB1_4d_Sum"
+  top: "conv1_3"
+  param {name: "conv3_w"}
+  param {name: "conv3_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "conv1_4"
+  type: "Convolution"
+  bottom: "conv1_3"
+  top: "conv1_4"
+  param {name: "conv4_w"}
+  param {name: "conv4_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_5a"
+  type: "Convolution"
+  bottom: "conv1_4"
+  top: "RDB1_5a"
+  param {name: "RDB5a_w"}
+  param {name: "RDB5a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_5a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_5a"
+  top: "RDB1_5a"
+}
+
+layer {
+  name: "RDB1_5a1"
+  type: "Convolution"
+  bottom: "RDB1_5a"
+  top: "RDB1_5a1"
+  param {name: "RDB5a1_w"}
+  param {name: "RDB5a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_5_Eltwise1"
+  type: "Eltwise"
+  bottom: "conv1_4"
+  bottom: "RDB1_5a1"
+  top: "RDB1_5_Eltwise1"
+}
+
+layer {
+  name: "RDB1_5b"
+  type: "Convolution"
+  bottom: "RDB1_5_Eltwise1"
+  top: "RDB1_5b"
+  param {name: "RDB5b_w"}
+  param {name: "RDB5b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_5b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_5b"
+  top: "RDB1_5b"
+}
+
+layer {
+  name: "RDB1_5b1"
+  type: "Convolution"
+  bottom: "RDB1_5b"
+  top: "RDB1_5b1"
+  param {name: "RDB5b1_w"}
+  param {name: "RDB5b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_5_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_5b1"
+  bottom: "RDB1_5_Eltwise1"
+  top: "RDB1_5_Eltwise2"
+}
+
+layer {
+  name: "RDB1_5c"
+  type: "Convolution"
+  bottom: "RDB1_5_Eltwise2"
+  top: "RDB1_5c"
+  param {name: "RDB5c_w"}
+  param {name: "RDB5c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_5c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_5c"
+  top: "RDB1_5c"
+}
+
+layer {
+  name: "RDB1_5c1"
+  type: "Convolution"
+  bottom: "RDB1_5c"
+  top: "RDB1_5c1"
+  param {name: "RDB5c1_w"}
+  param {name: "RDB5c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_5_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_5_Eltwise2"
+  bottom: "RDB1_5c1"
+  top: "RDB1_5_Eltwise3"
+}
+
+layer {
+  name: "RDB1_5d"
+  type: "Convolution"
+  bottom: "RDB1_5_Eltwise3"
+  top: "RDB1_5d"
+  param {name: "RDB5d_w"}
+  param {name: "RDB5d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_5d_Sum"
+	type: "Eltwise"
+	bottom: "conv1_4"
+	bottom: "RDB1_5d"
+	top: "RDB1_5d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB1_6a"
+  type: "Convolution"
+  bottom: "RDB1_5d_Sum"
+  top: "RDB1_6a"
+  param {name: "RDB6a_w"}
+  param {name: "RDB6a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_6a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_6a"
+  top: "RDB1_6a"
+}
+
+layer {
+  name: "RDB1_6a1"
+  type: "Convolution"
+  bottom: "RDB1_6a"
+  top: "RDB1_6a1"
+  param {name: "RDB6a1_w"}
+  param {name: "RDB6a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_6_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB1_5d_Sum"
+  bottom: "RDB1_6a1"
+  top: "RDB1_6_Eltwise1"
+}
+
+layer {
+  name: "RDB1_6b"
+  type: "Convolution"
+  bottom: "RDB1_6_Eltwise1"
+  top: "RDB1_6b"
+  param {name: "RDB6b_w"}
+  param {name: "RDB6b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_6b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_6b"
+  top: "RDB1_6b"
+}
+
+layer {
+  name: "RDB1_6b1"
+  type: "Convolution"
+  bottom: "RDB1_6b"
+  top: "RDB1_6b1"
+  param {name: "RDB6b1_w"}
+  param {name: "RDB6b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_6_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_6b1"
+  bottom: "RDB1_6_Eltwise1"
+  top: "RDB1_6_Eltwise2"
+}
+
+layer {
+  name: "RDB1_6c"
+  type: "Convolution"
+  bottom: "RDB1_6_Eltwise2"
+  top: "RDB1_6c"
+  param {name: "RDB6c_w"}
+  param {name: "RDB6c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_6c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_6c"
+  top: "RDB1_6c"
+}
+
+layer {
+  name: "RDB1_6c1"
+  type: "Convolution"
+  bottom: "RDB1_6c"
+  top: "RDB1_6c1"
+  param {name: "RDB6c1_w"}
+  param {name: "RDB6c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_6_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_6_Eltwise2"
+  bottom: "RDB1_6c1"
+  top: "RDB1_6_Eltwise3"
+}
+
+layer {
+  name: "RDB1_6d"
+  type: "Convolution"
+  bottom: "RDB1_6_Eltwise3"
+  top: "RDB1_6d"
+  param {name: "RDB6d_w"}
+  param {name: "RDB6d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_6d_Sum"
+	type: "Eltwise"
+	bottom: "RDB1_5d_Sum"
+	bottom: "RDB1_6d"
+	top: "RDB1_6d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB1_7a"
+  type: "Convolution"
+  bottom: "RDB1_6d_Sum"
+  top: "RDB1_7a"
+  param {name: "RDB7a_w"}
+  param {name: "RDB7a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_7a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_7a"
+  top: "RDB1_7a"
+}
+
+layer {
+  name: "RDB1_7a1"
+  type: "Convolution"
+  bottom: "RDB1_7a"
+  top: "RDB1_7a1"
+  param {name: "RDB7a1_w"}
+  param {name: "RDB7a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_7_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB1_6d_Sum"
+  bottom: "RDB1_7a1"
+  top: "RDB1_7_Eltwise1"
+}
+
+layer {
+  name: "RDB1_7b"
+  type: "Convolution"
+  bottom: "RDB1_7_Eltwise1"
+  top: "RDB1_7b"
+  param {name: "RDB7b_w"}
+  param {name: "RDB7b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_7b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_7b"
+  top: "RDB1_7b"
+}
+
+layer {
+  name: "RDB1_7b1"
+  type: "Convolution"
+  bottom: "RDB1_7b"
+  top: "RDB1_7b1"
+  param {name: "RDB7b1_w"}
+  param {name: "RDB7b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_7_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_7b1"
+  bottom: "RDB1_7_Eltwise1"
+  top: "RDB1_7_Eltwise2"
+}
+
+layer {
+  name: "RDB1_7c"
+  type: "Convolution"
+  bottom: "RDB1_7_Eltwise2"
+  top: "RDB1_7c"
+  param {name: "RDB7c_w"}
+  param {name: "RDB7c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_7c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_7c"
+  top: "RDB1_7c"
+}
+
+layer {
+  name: "RDB1_7c1"
+  type: "Convolution"
+  bottom: "RDB1_7c"
+  top: "RDB1_7c1"
+  param {name: "RDB7c1_w"}
+  param {name: "RDB7c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_7_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_7_Eltwise2"
+  bottom: "RDB1_7c1"
+  top: "RDB1_7_Eltwise3"
+}
+
+layer {
+  name: "RDB1_7d"
+  type: "Convolution"
+  bottom: "RDB1_7_Eltwise3"
+  top: "RDB1_7d"
+  param {name: "RDB7d_w"}
+  param {name: "RDB7d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_7d_Sum"
+	type: "Eltwise"
+	bottom: "RDB1_6d_Sum"
+	bottom: "RDB1_7d"
+	top: "RDB1_7d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB1_8a"
+  type: "Convolution"
+  bottom: "RDB1_7d_Sum"
+  top: "RDB1_8a"
+  param {name: "RDB8a_w"}
+  param {name: "RDB8a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_8a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_8a"
+  top: "RDB1_8a"
+}
+
+layer {
+  name: "RDB1_8a1"
+  type: "Convolution"
+  bottom: "RDB1_8a"
+  top: "RDB1_8a1"
+  param {name: "RDB8a1_w"}
+  param {name: "RDB8a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_8_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB1_7d_Sum"
+  bottom: "RDB1_8a1"
+  top: "RDB1_8_Eltwise1"
+}
+
+layer {
+  name: "RDB1_8b"
+  type: "Convolution"
+  bottom: "RDB1_8_Eltwise1"
+  top: "RDB1_8b"
+  param {name: "RDB8b_w"}
+  param {name: "RDB8b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_8b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_8b"
+  top: "RDB1_8b"
+}
+
+layer {
+  name: "RDB1_8b1"
+  type: "Convolution"
+  bottom: "RDB1_8b"
+  top: "RDB1_8b1"
+  param {name: "RDB8b1_w"}
+  param {name: "RDB8b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_8_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_8b1"
+  bottom: "RDB1_8_Eltwise1"
+  top: "RDB1_8_Eltwise2"
+}
+
+layer {
+  name: "RDB1_8c"
+  type: "Convolution"
+  bottom: "RDB1_8_Eltwise2"
+  top: "RDB1_8c"
+  param {name: "RDB8c_w"}
+  param {name: "RDB8c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_8c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_8c"
+  top: "RDB1_8c"
+}
+
+layer {
+  name: "RDB1_8c1"
+  type: "Convolution"
+  bottom: "RDB1_8c"
+  top: "RDB1_8c1"
+  param {name: "RDB8c1_w"}
+  param {name: "RDB8c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_8_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_8_Eltwise2"
+  bottom: "RDB1_8c1"
+  top: "RDB1_8_Eltwise3"
+}
+
+layer {
+  name: "RDB1_8d"
+  type: "Convolution"
+  bottom: "RDB1_8_Eltwise3"
+  top: "RDB1_8d"
+  param {name: "RDB8d_w"}
+  param {name: "RDB8d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_8d_Sum"
+	type: "Eltwise"
+	bottom: "RDB1_7d_Sum"
+	bottom: "RDB1_8d"
+	top: "RDB1_8d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB1_9a"
+  type: "Convolution"
+  bottom: "RDB1_8d_Sum"
+  top: "RDB1_9a"
+  param {name: "RDB9a_w"}
+  param {name: "RDB9a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_9a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_9a"
+  top: "RDB1_9a"
+}
+
+layer {
+  name: "RDB1_9a1"
+  type: "Convolution"
+  bottom: "RDB1_9a"
+  top: "RDB1_9a1"
+  param {name: "RDB9a1_w"}
+  param {name: "RDB9a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_9_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB1_8d_Sum"
+  bottom: "RDB1_9a1"
+  top: "RDB1_9_Eltwise1"
+}
+
+layer {
+  name: "RDB1_9b"
+  type: "Convolution"
+  bottom: "RDB1_9_Eltwise1"
+  top: "RDB1_9b"
+  param {name: "RDB9b_w"}
+  param {name: "RDB9b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_9b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_9b"
+  top: "RDB1_9b"
+}
+
+layer {
+  name: "RDB1_9b1"
+  type: "Convolution"
+  bottom: "RDB1_9b"
+  top: "RDB1_9b1"
+  param {name: "RDB9b1_w"}
+  param {name: "RDB9b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_9_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_9b1"
+  bottom: "RDB1_9_Eltwise1"
+  top: "RDB1_9_Eltwise2"
+}
+
+layer {
+  name: "RDB1_9c"
+  type: "Convolution"
+  bottom: "RDB1_9_Eltwise2"
+  top: "RDB1_9c"
+  param {name: "RDB9c_w"}
+  param {name: "RDB9c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_9c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_9c"
+  top: "RDB1_9c"
+}
+
+layer {
+  name: "RDB1_9c1"
+  type: "Convolution"
+  bottom: "RDB1_9c"
+  top: "RDB1_9c1"
+  param {name: "RDB9c1_w"}
+  param {name: "RDB9c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_9_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_9_Eltwise2"
+  bottom: "RDB1_9c1"
+  top: "RDB1_9_Eltwise3"
+}
+
+layer {
+  name: "RDB1_9d"
+  type: "Convolution"
+  bottom: "RDB1_9_Eltwise3"
+  top: "RDB1_9d"
+  param {name: "RDB9d_w"}
+  param {name: "RDB9d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_9d_Sum"
+	type: "Eltwise"
+	bottom: "RDB1_8d_Sum"
+	bottom: "RDB1_9d"
+	top: "RDB1_9d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB1_10a"
+  type: "Convolution"
+  bottom: "RDB1_9d_Sum"
+  top: "RDB1_10a"
+  param {name: "RDB10a_w"}
+  param {name: "RDB10a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_10a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_10a"
+  top: "RDB1_10a"
+}
+
+layer {
+  name: "RDB1_10a1"
+  type: "Convolution"
+  bottom: "RDB1_10a"
+  top: "RDB1_10a1"
+  param {name: "RDB10a1_w"}
+  param {name: "RDB10a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_10_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB1_9d_Sum"
+  bottom: "RDB1_10a1"
+  top: "RDB1_10_Eltwise1"
+}
+
+layer {
+  name: "RDB1_10b"
+  type: "Convolution"
+  bottom: "RDB1_10_Eltwise1"
+  top: "RDB1_10b"
+  param {name: "RDB10b_w"}
+  param {name: "RDB10b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_10b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_10b"
+  top: "RDB1_10b"
+}
+
+layer {
+  name: "RDB1_10b1"
+  type: "Convolution"
+  bottom: "RDB1_10b"
+  top: "RDB1_10b1"
+  param {name: "RDB10b1_w"}
+  param {name: "RDB10b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_10_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_10b1"
+  bottom: "RDB1_10_Eltwise1"
+  top: "RDB1_10_Eltwise2"
+}
+
+layer {
+  name: "RDB1_10c"
+  type: "Convolution"
+  bottom: "RDB1_10_Eltwise2"
+  top: "RDB1_10c"
+  param {name: "RDB10c_w"}
+  param {name: "RDB10c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_10c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_10c"
+  top: "RDB1_10c"
+}
+
+layer {
+  name: "RDB1_10c1"
+  type: "Convolution"
+  bottom: "RDB1_10c"
+  top: "RDB1_10c1"
+  param {name: "RDB10c1_w"}
+  param {name: "RDB10c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_10_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_10_Eltwise2"
+  bottom: "RDB1_10c1"
+  top: "RDB1_10_Eltwise3"
+}
+
+layer {
+  name: "RDB1_10d"
+  type: "Convolution"
+  bottom: "RDB1_10_Eltwise3"
+  top: "RDB1_10d"
+  param {name: "RDB10d_w"}
+  param {name: "RDB10d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_10d_Sum"
+	type: "Eltwise"
+	bottom: "RDB1_9d_Sum"
+	bottom: "RDB1_10d"
+	top: "RDB1_10d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB1_11a"
+  type: "Convolution"
+  bottom: "RDB1_10d_Sum"
+  top: "RDB1_11a"
+  param {name: "RDB11a_w"}
+  param {name: "RDB11a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_11a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_11a"
+  top: "RDB1_11a"
+}
+
+layer {
+  name: "RDB1_11a1"
+  type: "Convolution"
+  bottom: "RDB1_11a"
+  top: "RDB1_11a1"
+  param {name: "RDB11a1_w"}
+  param {name: "RDB11a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_11_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB1_10d_Sum"
+  bottom: "RDB1_11a1"
+  top: "RDB1_11_Eltwise1"
+}
+
+layer {
+  name: "RDB1_11b"
+  type: "Convolution"
+  bottom: "RDB1_11_Eltwise1"
+  top: "RDB1_11b"
+  param {name: "RDB11b_w"}
+  param {name: "RDB11b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_11b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_11b"
+  top: "RDB1_11b"
+}
+
+layer {
+  name: "RDB1_11b1"
+  type: "Convolution"
+  bottom: "RDB1_11b"
+  top: "RDB1_11b1"
+  param {name: "RDB11b1_w"}
+  param {name: "RDB11b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_11_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_11b1"
+  bottom: "RDB1_11_Eltwise1"
+  top: "RDB1_11_Eltwise2"
+}
+
+layer {
+  name: "RDB1_11c"
+  type: "Convolution"
+  bottom: "RDB1_11_Eltwise2"
+  top: "RDB1_11c"
+  param {name: "RDB11c_w"}
+  param {name: "RDB11c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_11c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_11c"
+  top: "RDB1_11c"
+}
+
+layer {
+  name: "RDB1_11c1"
+  type: "Convolution"
+  bottom: "RDB1_11c"
+  top: "RDB1_11c1"
+  param {name: "RDB11c1_w"}
+  param {name: "RDB11c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_11_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_11_Eltwise2"
+  bottom: "RDB1_11c1"
+  top: "RDB1_11_Eltwise3"
+}
+
+layer {
+  name: "RDB1_11d"
+  type: "Convolution"
+  bottom: "RDB1_11_Eltwise3"
+  top: "RDB1_11d"
+  param {name: "RDB11d_w"}
+  param {name: "RDB11d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_11d_Sum"
+	type: "Eltwise"
+	bottom: "RDB1_10d_Sum"
+	bottom: "RDB1_11d"
+	top: "RDB1_11d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB1_12a"
+  type: "Convolution"
+  bottom: "RDB1_11d_Sum"
+  top: "RDB1_12a"
+  param {name: "RDB12a_w"}
+  param {name: "RDB12a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_12a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_12a"
+  top: "RDB1_12a"
+}
+
+layer {
+  name: "RDB1_12a1"
+  type: "Convolution"
+  bottom: "RDB1_12a"
+  top: "RDB1_12a1"
+  param {name: "RDB12a1_w"}
+  param {name: "RDB12a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_12_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB1_11d_Sum"
+  bottom: "RDB1_12a1"
+  top: "RDB1_12_Eltwise1"
+}
+
+layer {
+  name: "RDB1_12b"
+  type: "Convolution"
+  bottom: "RDB1_12_Eltwise1"
+  top: "RDB1_12b"
+  param {name: "RDB12b_w"}
+  param {name: "RDB12b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_12b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_12b"
+  top: "RDB1_12b"
+}
+
+layer {
+  name: "RDB1_12b1"
+  type: "Convolution"
+  bottom: "RDB1_12b"
+  top: "RDB1_12b1"
+  param {name: "RDB12b1_w"}
+  param {name: "RDB12b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_12_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_12b1"
+  bottom: "RDB1_12_Eltwise1"
+  top: "RDB1_12_Eltwise2"
+}
+
+layer {
+  name: "RDB1_12c"
+  type: "Convolution"
+  bottom: "RDB1_12_Eltwise2"
+  top: "RDB1_12c"
+  param {name: "RDB12c_w"}
+  param {name: "RDB12c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_12c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_12c"
+  top: "RDB1_12c"
+}
+
+layer {
+  name: "RDB1_12c1"
+  type: "Convolution"
+  bottom: "RDB1_12c"
+  top: "RDB1_12c1"
+  param {name: "RDB12c1_w"}
+  param {name: "RDB12c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_12_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_12_Eltwise2"
+  bottom: "RDB1_12c1"
+  top: "RDB1_12_Eltwise3"
+}
+
+layer {
+  name: "RDB1_12d"
+  type: "Convolution"
+  bottom: "RDB1_12_Eltwise3"
+  top: "RDB1_12d"
+  param {name: "RDB12d_w"}
+  param {name: "RDB12d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_12d_Sum"
+	type: "Eltwise"
+	bottom: "RDB1_11d_Sum"
+	bottom: "RDB1_12d"
+	top: "RDB1_12d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "Dark_conv1_1"
+  type: "Convolution"
+  bottom: "RDB1_12d_Sum"
+  top: "Dark_conv1_1"
+  param {name: "Dark1_w"}
+  param {name: "Dark1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+	name: "Dark1_1_Sum"
+	type: "Eltwise"
+	bottom: "conv1_3"
+	bottom: "Dark_conv1_1"
+	top: "Dark1_1_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+#################################################
+
+layer {
+  name: "up1_1"
+  type: "Dtow"
+  bottom: "Dark1_1_Sum"
+  top: "up1_1"
+  dtow_param {
+    psize: 2
+  }
+}
+
+layer {
+  name: "conv1_5"
+  type: "Convolution"
+  bottom: "up1_1"
+  top: "conv1_5"
+  param {name: "conv5_w"}
+  param {name: "conv5_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_13a"
+  type: "Convolution"
+  bottom: "conv1_5"
+  top: "RDB1_13a"
+  param {name: "RDB13a_w"}
+  param {name: "RDB13a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_13a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_13a"
+  top: "RDB1_13a"
+}
+
+layer {
+  name: "RDB1_13a1"
+  type: "Convolution"
+  bottom: "RDB1_13a"
+  top: "RDB1_13a1"
+  param {name: "RDB13a1_w"}
+  param {name: "RDB13a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_13_Eltwise1"
+  type: "Eltwise"
+  bottom: "conv1_5"
+  bottom: "RDB1_13a1"
+  top: "RDB1_13_Eltwise1"
+}
+
+layer {
+  name: "RDB1_13b"
+  type: "Convolution"
+  bottom: "RDB1_13_Eltwise1"
+  top: "RDB1_13b"
+  param {name: "RDB13b_w"}
+  param {name: "RDB13b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_13b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_13b"
+  top: "RDB1_13b"
+}
+
+layer {
+  name: "RDB1_13b1"
+  type: "Convolution"
+  bottom: "RDB1_13b"
+  top: "RDB1_13b1"
+  param {name: "RDB13b1_w"}
+  param {name: "RDB13b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_13_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_13b1"
+  bottom: "RDB1_13_Eltwise1"
+  top: "RDB1_13_Eltwise2"
+}
+
+layer {
+  name: "RDB1_13c"
+  type: "Convolution"
+  bottom: "RDB1_13_Eltwise2"
+  top: "RDB1_13c"
+  param {name: "RDB13c_w"}
+  param {name: "RDB13c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_13c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_13c"
+  top: "RDB1_13c"
+}
+
+layer {
+  name: "RDB1_13c1"
+  type: "Convolution"
+  bottom: "RDB1_13c"
+  top: "RDB1_13c1"
+  param {name: "RDB13c1_w"}
+  param {name: "RDB13c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_13_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_13_Eltwise2"
+  bottom: "RDB1_13c1"
+  top: "RDB1_13_Eltwise3"
+}
+
+layer {
+  name: "RDB1_13d"
+  type: "Convolution"
+  bottom: "RDB1_13_Eltwise3"
+  top: "RDB1_13d"
+  param {name: "RDB13d_w"}
+  param {name: "RDB13d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_13d_Sum"
+	type: "Eltwise"
+	bottom: "conv1_5"
+	bottom: "RDB1_13d"
+	top: "RDB1_13d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB1_14a"
+  type: "Convolution"
+  bottom: "RDB1_13d_Sum"
+  top: "RDB1_14a"
+  param {name: "RDB14a_w"}
+  param {name: "RDB14a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_14a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_14a"
+  top: "RDB1_14a"
+}
+
+layer {
+  name: "RDB1_14a1"
+  type: "Convolution"
+  bottom: "RDB1_14a"
+  top: "RDB1_14a1"
+  param {name: "RDB14a1_w"}
+  param {name: "RDB14a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_14_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB1_13d_Sum"
+  bottom: "RDB1_14a1"
+  top: "RDB1_14_Eltwise1"
+}
+
+layer {
+  name: "RDB1_14b"
+  type: "Convolution"
+  bottom: "RDB1_14_Eltwise1"
+  top: "RDB1_14b"
+  param {name: "RDB14b_w"}
+  param {name: "RDB14b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_14b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_14b"
+  top: "RDB1_14b"
+}
+
+layer {
+  name: "RDB1_14b1"
+  type: "Convolution"
+  bottom: "RDB1_14b"
+  top: "RDB1_14b1"
+  param {name: "RDB14b1_w"}
+  param {name: "RDB14b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_14_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_14b1"
+  bottom: "RDB1_14_Eltwise1"
+  top: "RDB1_14_Eltwise2"
+}
+
+layer {
+  name: "RDB1_14c"
+  type: "Convolution"
+  bottom: "RDB1_14_Eltwise2"
+  top: "RDB1_14c"
+  param {name: "RDB14c_w"}
+  param {name: "RDB14c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_14c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_14c"
+  top: "RDB1_14c"
+}
+
+layer {
+  name: "RDB1_14c1"
+  type: "Convolution"
+  bottom: "RDB1_14c"
+  top: "RDB1_14c1"
+  param {name: "RDB14c1_w"}
+  param {name: "RDB14c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_14_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_14_Eltwise2"
+  bottom: "RDB1_14c1"
+  top: "RDB1_14_Eltwise3"
+}
+
+layer {
+  name: "RDB1_14d"
+  type: "Convolution"
+  bottom: "RDB1_14_Eltwise3"
+  top: "RDB1_14d"
+  param {name: "RDB14d_w"}
+  param {name: "RDB14d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_14d_Sum"
+	type: "Eltwise"
+	bottom: "RDB1_13d_Sum"
+	bottom: "RDB1_14d"
+	top: "RDB1_14d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB1_15a"
+  type: "Convolution"
+  bottom: "RDB1_14d_Sum"
+  top: "RDB1_15a"
+  param {name: "RDB15a_w"}
+  param {name: "RDB15a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_15a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_15a"
+  top: "RDB1_15a"
+}
+
+layer {
+  name: "RDB1_15a1"
+  type: "Convolution"
+  bottom: "RDB1_15a"
+  top: "RDB1_15a1"
+  param {name: "RDB15a1_w"}
+  param {name: "RDB15a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_15_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB1_14d_Sum"
+  bottom: "RDB1_15a1"
+  top: "RDB1_15_Eltwise1"
+}
+
+layer {
+  name: "RDB1_15b"
+  type: "Convolution"
+  bottom: "RDB1_15_Eltwise1"
+  top: "RDB1_15b"
+  param {name: "RDB15b_w"}
+  param {name: "RDB15b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_15b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_15b"
+  top: "RDB1_15b"
+}
+
+layer {
+  name: "RDB1_15b1"
+  type: "Convolution"
+  bottom: "RDB1_15b"
+  top: "RDB1_15b1"
+  param {name: "RDB15b1_w"}
+  param {name: "RDB15b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_15_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_15b1"
+  bottom: "RDB1_15_Eltwise1"
+  top: "RDB1_15_Eltwise2"
+}
+
+layer {
+  name: "RDB1_15c"
+  type: "Convolution"
+  bottom: "RDB1_15_Eltwise2"
+  top: "RDB1_15c"
+  param {name: "RDB15c_w"}
+  param {name: "RDB15c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_15c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_15c"
+  top: "RDB1_15c"
+}
+
+layer {
+  name: "RDB1_15c1"
+  type: "Convolution"
+  bottom: "RDB1_15c"
+  top: "RDB1_15c1"
+  param {name: "RDB15c1_w"}
+  param {name: "RDB15c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_15_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_15_Eltwise2"
+  bottom: "RDB1_15c1"
+  top: "RDB1_15_Eltwise3"
+}
+
+layer {
+  name: "RDB1_15d"
+  type: "Convolution"
+  bottom: "RDB1_15_Eltwise3"
+  top: "RDB1_15d"
+  param {name: "RDB15d_w"}
+  param {name: "RDB15d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_15d_Sum"
+	type: "Eltwise"
+	bottom: "RDB1_14d_Sum"
+	bottom: "RDB1_15d"
+	top: "RDB1_15d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "RDB1_16a"
+  type: "Convolution"
+  bottom: "RDB1_15d_Sum"
+  top: "RDB1_16a"
+  param {name: "RDB16a_w"}
+  param {name: "RDB16a_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_16a_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_16a"
+  top: "RDB1_16a"
+}
+
+layer {
+  name: "RDB1_16a1"
+  type: "Convolution"
+  bottom: "RDB1_16a"
+  top: "RDB1_16a1"
+  param {name: "RDB16a1_w"}
+  param {name: "RDB16a1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_16_Eltwise1"
+  type: "Eltwise"
+  bottom: "RDB1_15d_Sum"
+  bottom: "RDB1_16a1"
+  top: "RDB1_16_Eltwise1"
+}
+
+layer {
+  name: "RDB1_16b"
+  type: "Convolution"
+  bottom: "RDB1_16_Eltwise1"
+  top: "RDB1_16b"
+  param {name: "RDB16b_w"}
+  param {name: "RDB16b_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "RDB1_16b_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_16b"
+  top: "RDB1_16b"
+}
+
+layer {
+  name: "RDB1_16b1"
+  type: "Convolution"
+  bottom: "RDB1_16b"
+  top: "RDB1_16b1"
+  param {name: "RDB16b1_w"}
+  param {name: "RDB16b1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_16_Eltwise2"
+  type: "Eltwise"
+  bottom: "RDB1_16b1"
+  bottom: "RDB1_16_Eltwise1"
+  top: "RDB1_16_Eltwise2"
+}
+
+layer {
+  name: "RDB1_16c"
+  type: "Convolution"
+  bottom: "RDB1_16_Eltwise2"
+  top: "RDB1_16c"
+  param {name: "RDB16c_w"}
+  param {name: "RDB16c_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+layer {
+  name: "RDB1_16c_PReLU"
+  type: "PReLU"
+  bottom: "RDB1_16c"
+  top: "RDB1_16c"
+}
+
+layer {
+  name: "RDB1_16c1"
+  type: "Convolution"
+  bottom: "RDB1_16c"
+  top: "RDB1_16c1"
+  param {name: "RDB16c1_w"}
+  param {name: "RDB16c1_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "RDB1_16_Eltwise3"
+  type: "Eltwise"
+  bottom: "RDB1_16_Eltwise2"
+  bottom: "RDB1_16c1"
+  top: "RDB1_16_Eltwise3"
+}
+
+layer {
+  name: "RDB1_16d"
+  type: "Convolution"
+  bottom: "RDB1_16_Eltwise3"
+  top: "RDB1_16d"
+  param {name: "RDB16d_w"}
+  param {name: "RDB16d_b"}
+  convolution_param {
+    num_output: 64
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    } 
+  }
+}
+
+layer {
+	name: "RDB1_16d_Sum"
+	type: "Eltwise"
+	bottom: "RDB1_15d_Sum"
+	bottom: "RDB1_16d"
+	top: "RDB1_16d_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "Dark_conv1_2"
+  type: "Convolution"
+  bottom: "RDB1_16d_Sum"
+  top: "Dark_conv1_2"
+  param {name: "Dark2_w"}
+  param {name: "Dark2_b"}
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+	name: "Dark1_2_Sum"
+	type: "Eltwise"
+	bottom: "conv1_1"
+	bottom: "Dark_conv1_2"
+	top: "Dark1_2_Sum"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "Concat1_2_b"
+  type: "Concat"
+  bottom: "Dark1_2_Sum"
+  bottom: "prepro2_5"
+  top: "Concat1_2_b"
+}
+
+layer {
+  name: "conv1_6"
+  type: "Convolution"
+  bottom: "Concat1_2_b"
+  top: "conv1_6"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "up1_2"
+  type: "Dtow"
+  bottom: "conv1_6"
+  top: "up1_2"
+  dtow_param {
+    psize: 2
+  }
+}
+
+layer {
+  name: "prepro1_4"
+  type: "Convolution"
+  bottom: "up1_2"
+  top: "prepro1_4"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+	name: "Sum1_1"
+	type: "Eltwise"
+	bottom: "prepro1_3"
+	bottom: "prepro1_4"
+	top: "Sum1_1"
+	eltwise_param {
+	  operation: 1
+	}
+}
+
+layer {
+  name: "Cdarkchannel1_2"
+  type: "Convolution"
+  bottom: "Sum1_1"
+  top: "Cdarkchannel1_2"
+  convolution_param {
+    num_output: 3
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "Cwhitechannel1_2"
+  type: "Convolution"
+  bottom: "Sum1_1"
+  top: "Cwhitechannel1_2"
+  convolution_param {
+    num_output: 3
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "Sum1_2"
+  type: "Convolution"
+  bottom: "Sum1_1"
+  top: "Sum1_2"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "eltwiseDWD1_2"
+  type: "Concat"
+  bottom: "Sum1_2"
+  bottom: "Cdarkchannel1_2"
+  bottom: "Cwhitechannel1_2"
+  top: "eltwiseDWD1_2"
+}
+
+layer {
+  name: "prepro1_5"
+  type: "Convolution"
+  bottom: "eltwiseDWD1_2"
+  top: "prepro1_5"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "Outdata1"
+  type: "Convolution"
+  bottom: "prepro1_5"
+  top: "Outdata1"
+  convolution_param {
+    num_output: 3
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
